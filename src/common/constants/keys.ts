@@ -3,8 +3,10 @@ export const enum ClientRouteKey {
 	Login = "/login",
 	Home = "/home",
 	User = "/user",
+	Plan = "/plan",
 	Create = "/create",
 	OAuth = "/cmuOAuthCallback",
+  	
 }
 
 export const enum ApiRouteKey {
