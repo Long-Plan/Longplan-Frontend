@@ -2,6 +2,7 @@ import useGlobalStore from "common/contexts/StoreContext";
 import { coreApi } from "core/connections";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import TermPopup from "./term/termpopup";
 
 type CurriculumPayload = {
   major: string;
@@ -109,10 +110,11 @@ export const CheckPage: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       {/* Render your curriculumData and groupedEnrolls here */}
       {/* <pre>{JSON.stringify(curriculumData, null, 2)}</pre> */}
-      <pre>{JSON.stringify(groupedEnrolls, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(groupedEnrolls, null, 2)}</pre> */}
+      <TermPopup />
     </div>
   );
 };

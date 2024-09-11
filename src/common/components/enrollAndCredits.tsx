@@ -71,7 +71,7 @@ function getCurriculum({
 function getEnrolledCourses(): Promise<EnrolledCoursesData> {
   return new Promise<EnrolledCoursesData>((resolve, reject) => {
     coreApi
-      .get(`/student/enrolledData`)
+      .get(`/student/enrolledDataOld`)
       .then((res: { data: EnrolledCoursesData }) => resolve(res.data))
       .catch(reject);
   });

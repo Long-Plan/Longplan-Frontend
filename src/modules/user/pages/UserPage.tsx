@@ -71,7 +71,7 @@ interface EnrollCourseProps {
 const EnrollCourse = ({ selectedYearSemester }: EnrollCourseProps) => {
   const getEnrolledCourses = (): Promise<EnrolledCoursesData> => {
     return coreApi
-      .get(`/student/enrolledData`)
+      .get(`/student/enrolledDataOld`)
       .then((res: { data: EnrolledCoursesData }) => res.data)
       .catch((error) => {
         console.error("Error fetching enrolled courses:", error);
