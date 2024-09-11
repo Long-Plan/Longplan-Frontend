@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { BaseBoxProps, SubjectBoxProps } from "utils/BoxUtils";
-
-// Detail component to show detailed information
-const CourseDetailBox: React.FC<BaseBoxProps> = ({ courseTitleEng }) => (
-  <div className="rounded-[20px] absolute bg-white p-2 border shadow-lg z-50 w-[150px] left-[80%] top-[50%]">
-    <p className="font-bold text-[12px]">{courseTitleEng}</p>
-    {/* Add more details as needed */}
-  </div>
-);
+import CourseDetailsPopup from "../Dialog/Coursedetail"; // Adjust import path
 
 interface HoverableBoxProps extends SubjectBoxProps {
   BoxComponent: React.FC<BaseBoxProps>;
@@ -21,32 +14,50 @@ const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
   courseCredit,
   courseFullName,
 }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup control state
 
-  const handleMouseEnter = () => {
-    setShowDetails(true);
-  };
-
-  const handleMouseLeave = () => {
-    setShowDetails(false);
+  // Handle click event to toggle popup
+  const handleBoxClick = () => {
+    setIsPopupOpen(true);
   };
 
   return (
-    <span
-      className="relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <BoxComponent
-        courseNo={courseNo}
-        courseTitleEng={courseTitleEng}
-        courseCredit={courseCredit}
-      />
-      {showDetails && (
-        <CourseDetailBox
+    <span className="relative">
+      {/* Render the course box */}
+      <div onClick={handleBoxClick}>
+        <BoxComponent
           courseNo={courseNo}
-          courseTitleEng={courseFullName}
+          courseTitleEng={courseTitleEng}
           courseCredit={courseCredit}
+        />
+      </div>
+      {/* Render the Course Detail Popup only when isPopupOpen is true */}
+      {isPopupOpen && (
+        <CourseDetailsPopup
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)} // Close the popup when clicked
+          courseDetails={{
+            code: courseNo,
+            name: courseFullName,
+            credits: courseCredit,
+            category: "Major Requirements (mock data)", // Example data, replace as needed
+            recommendedYear: "ปี 3 เทอม 1", // Example data
+            prerequisites: {
+              frontCourses: [
+                { code: "000000", name: "Algorithms", term: "ปี 2 เทอม 2" },
+              ],
+              allCourses: [
+                { code: "000000", name: "Algorithms", term: "ปี 2 เทอม 2" },
+                { code: "000000", name: "Discrete Math", term: "ปี 2 เทอม 1" },
+                { code: "000000", name: "Data Structure", term: "ปี 2 เทอม 1" },
+                {
+                  code: "000000",
+                  name: "Computer Programming",
+                  term: "ปี 1 เทอม 2",
+                },
+              ],
+            },
+          }}
         />
       )}
     </span>

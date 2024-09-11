@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLoadingContext } from "react-router-loading";
+import CurriculumBox from "common/components/CurriculumBox";
 import FeedBack from "common/components/FeedBack";
 import EnrollAndCredits from "common/components/enrollAndCredits";
 import CheckPage from "common/components/checkPage";
@@ -22,9 +23,9 @@ function Home() {
       {/* <StudentCheckPage /> */}
       <EnrollAndCredits />
       {/* <CheckPage /> */}
-      {/*<div className={`flex justify-center`}>*/}
-      {/*    <CurriculumBox/>*/}
-      {/*</div>*/}
+      <div className={`flex justify-center`}>
+        <CurriculumBox />
+      </div>
       {/* <FeedBack /> */}
       {/* <CourseTitleExtractor /> */}
     </div>

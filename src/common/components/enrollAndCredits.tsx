@@ -14,8 +14,9 @@ import PendingCreditBox from "./EnrollSubject/PendingCreditBox";
 import { coreApi } from "core/connections";
 import { useQuery } from "react-query";
 import useGlobalStore from "common/contexts/StoreContext";
-import PlanSelection from "./Navbar/PlanSelection.tsx";
+import PlanSelection from "./planselector/PlanSelection.tsx";
 import { toInteger } from "lodash-es";
+import PlanSettingPopup from "./planselector/PlanSetting.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -966,7 +967,11 @@ export const EnrollAndCredits: React.FC = () => {
           </div>
         </div>
       )}
-      {!showInfoBox && <PlanSelection onPlanChange={setSelectedPlan} />}
+      {!showInfoBox && (
+        <div>
+          <PlanSelection onPlanChange={setSelectedPlan} />
+        </div>
+      )}
       <div className="pb-10"></div>
       <div className="flex">
         <div

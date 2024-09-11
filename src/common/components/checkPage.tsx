@@ -3,6 +3,8 @@ import { coreApi } from "core/connections";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import TermPopup from "./term/termpopup";
+import PlanSettingPopup from "./planselector/PlanSetting";
+import CourseDetailsPopup from "./Dialog/Coursedetail";
 
 type CurriculumPayload = {
   major: string;
@@ -114,7 +116,8 @@ export const CheckPage: React.FC = () => {
       {/* Render your curriculumData and groupedEnrolls here */}
       {/* <pre>{JSON.stringify(curriculumData, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(groupedEnrolls, null, 2)}</pre> */}
-      <TermPopup />
+      {/* <TermPopup /> */}
+      {/* <PlanSettingPopup /> */}
     </div>
   );
 };

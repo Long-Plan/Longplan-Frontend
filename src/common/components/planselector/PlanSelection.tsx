@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
+// mock data
 const plans = [
   {
     id: 1,
@@ -11,13 +12,23 @@ const plans = [
     plan: "normal",
     default: true,
   },
+  {
+    id: 2,
+    name: "CPE COOP Plan 2563",
+    major: "CPE",
+    year: "2563",
+    plan: "COOP",
+    default: false,
+  },
 ];
 
 type Plan = {
+  id: number;
   name: string;
   major: string;
   year: string;
   plan: string;
+  default: boolean;
 };
 
 function classNames(...classes: string[]) {
@@ -27,42 +38,37 @@ function classNames(...classes: string[]) {
 export default function PlanSelection({
   onPlanChange,
 }: {
-  onPlanChange: (plan: any) => void;
+  onPlanChange: (plan: Plan) => void;
 }) {
   const [selected, setSelected] = useState<Plan>(plans[0]);
 
   const handleChange = (plan: Plan) => {
     setSelected(plan);
-    onPlanChange({
-      name: plan.name,
-      major: plan.major,
-      year: plan.year,
-      plan: plan.plan,
-    });
+    onPlanChange(plan);
   };
 
   return (
-    <div className="plan-select w-screen">
-      <div className="mx-auto flex justify-between items-center pb-10 gap-6 mt-12">
-        <h1>หลักสูตรการศึกษา</h1>
+    <div className="w-screen plan-select">
+      <div className="flex justify-between items-center mx-auto gap-6 pb-10 mt-12">
+        <h1>แผนการเรียนหลักสูตร</h1>
         <div className="relative">
           <Listbox value={selected} onChange={handleChange}>
             {({ open }) => (
               <>
-                <Listbox.Button className="relative w-auto h-[40px] cursor-hover rounded-3xl bg-white py-0 pl-3 pr-12 text-left border-2 border-solid border-blue-shadeb5 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 md:text-md ">
-                  <span className="flex items-center">
-                    <span
-                      className={classNames(
-                        "ml-3 block truncate",
-                        "font-bold text-blue-shadeb5 "
-                      )}
-                    >
+                <Listbox.Button className="relative flex items-center h-12 w-auto pl-3 pr-12 text-left cursor-pointer rounded-3xl bg-white border-2 border-blue-shadeb5 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <div className="flex items-center">
+                    <span className="ml-3 font-bold text-blue-shadeb5 truncate">
                       {selected.name}
                     </span>
-                  </span>
-                  <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                    {selected.default && (
+                      <span className="ml-4 px-2.5 py-0.5 bg-gray-100 text-xs text-gray-500 rounded-full font-medium">
+                        Default
+                      </span>
+                    )}
+                  </div>
+                  <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <ChevronUpDownIcon
-                      className="h-5 w-5 text-blue-shadeb3"
+                      className="w-5 h-5 text-blue-shadeb3"
                       aria-hidden="true"
                     />
                   </span>
@@ -74,10 +80,11 @@ export default function PlanSelection({
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white py-1 text-base shadow-lg ring-5 ring-black ring-opacity-5 focus:outline-none md:text-md">
+                  <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full py-1 bg-white shadow-lg rounded-[20px] ring-1 ring-blue-shadeb5 ring-opacity-5 overflow-auto focus:outline-none md:text-md">
                     {plans.map((plan) => (
                       <Listbox.Option
                         key={plan.id}
+                        value={plan}
                         className={({ active }) =>
                           classNames(
                             active
@@ -86,7 +93,6 @@ export default function PlanSelection({
                             "relative cursor-default select-none py-2 pl-3 pr-9"
                           )
                         }
-                        value={plan}
                       >
                         {({ selected, active }) => (
                           <>
@@ -101,21 +107,27 @@ export default function PlanSelection({
                               >
                                 {plan.name}
                               </span>
+                              {plan.default && (
+                                <span className="ml-4 px-2.5 py-0.5 bg-gray-100 text-xs text-gray-500 rounded-full font-medium">
+                                  Default
+                                </span>
+                              )}
                             </div>
-
-                            {selected ? (
+                            {selected && (
                               <span
                                 className={classNames(
-                                  active ? "blue-shadeb5" : "text-blue-shadeb3",
+                                  active
+                                    ? "text-blue-shadeb5"
+                                    : "text-blue-shadeb3",
                                   "absolute inset-y-0 right-0 flex items-center pr-4"
                                 )}
                               >
                                 <CheckIcon
-                                  className="h-5 w-5"
+                                  className="w-5 h-5"
                                   aria-hidden="true"
                                 />
                               </span>
-                            ) : null}
+                            )}
                           </>
                         )}
                       </Listbox.Option>

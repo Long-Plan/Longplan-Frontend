@@ -54,7 +54,7 @@ type CurriculumPayload = {
 function getCurriculum({ major, year, plan }: CurriculumPayload) {
   return new Promise<CurriculumData>((resolve, reject) => {
     coreApi
-      .get(`/curriculum?major=${major}&year=${year}&plan=${plan}`)
+      .get(`/curriculum/Old?major=${major}&year=${year}&plan=${plan}`)
       .then((res) => resolve(res.data))
       .catch(reject);
   });
