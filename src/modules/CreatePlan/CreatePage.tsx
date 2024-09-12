@@ -14,9 +14,9 @@ function CreatePage() {
 				<div className="text-black md:text-2xl text-base font-medium pt-8 md:pt-16">
 					สร้างแพลนใหม่
 				</div>
-				<div className="w-2/4 max-w-full md:w-1/3 md:h-16 h-10 mt-6 mb-12 bg-white border border-[#e7e9fe] rounded-full flex items-center">
-					<div className="w-10 md:w-16 h-10 md:h-16 bg-[#f3f4ff] rounded-full border-2 border-[#6873d6] flex justify-center items-center">
-						<div className="text-center text-[#6873d6] text-xl md:text-3xl font-bold">
+				<div className="group w-2/4 max-w-full md:w-1/3 md:h-16 h-10 mt-6 mb-12 bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white border hover:border-2 border-[#e7e9fe] hover:border-[#4351cc] rounded-full flex items-center">
+					<div className="w-10 md:w-[3.8rem] h-10 md:h-[3.8rem] bg-[#f3f4ff] group-hover:bg-gradient-to-br from-[#FFFFFF] to-[#4351CC] rounded-full border-2 group-hover:border-2 border-[#6873d6] group-hover:border-white flex justify-center items-center">
+						<div className="text-center text-[#6873d6] group-hover:text-white text-xl md:text-3xl font-bold">
 							+
 						</div>
 					</div>
@@ -46,7 +46,7 @@ function CreatePage() {
 					</svg>
 				</div>
 				<div className="w-full h-72 flex flex-col items-center gap-4 overflow-y-scroll">
-					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border border-[#d9dcf4] bg-white rounded-full flex items-center px-5 flex-shrink-0">
+					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0">
 						<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
 							แพลน 1
 						</div>
@@ -64,7 +64,7 @@ function CreatePage() {
 							</div>
 						</div>
 					</div>
-					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border border-[#d9dcf4] bg-white rounded-full flex items-center px-5 flex-shrink-0">
+					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0">
 						<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
 							แพลน 2
 						</div>
@@ -82,7 +82,7 @@ function CreatePage() {
 							</div> */}
 						</div>
 					</div>
-					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border border-[#d9dcf4] bg-white rounded-full flex items-center px-5 flex-shrink-0">
+					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0">
 						<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
 							แพลน 2
 						</div>
@@ -100,7 +100,7 @@ function CreatePage() {
 							</div> */}
 						</div>
 					</div>
-					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border border-[#d9dcf4] bg-white rounded-full flex items-center px-5 flex-shrink-0">
+					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0">
 						<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
 							แพลน 2
 						</div>
@@ -118,7 +118,7 @@ function CreatePage() {
 							</div> */}
 						</div>
 					</div>
-					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border border-[#d9dcf4] bg-white rounded-full flex items-center px-5 flex-shrink-0">
+					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0">
 						<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
 							แพลน 2
 						</div>
@@ -136,7 +136,7 @@ function CreatePage() {
 							</div> */}
 						</div>
 					</div>
-					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border border-[#d9dcf4] bg-white rounded-full flex items-center px-5 flex-shrink-0">
+					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0">
 						<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
 							แพลน 2
 						</div>
@@ -154,7 +154,7 @@ function CreatePage() {
 							</div> */}
 						</div>
 					</div>
-					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border border-[#d9dcf4] bg-white rounded-full flex items-center px-5 flex-shrink-0">
+					<div className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0">
 						<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
 							แพลน 2
 						</div>
