@@ -9,6 +9,8 @@
 }
 
 :root {
+	font-family: IBM Plex Sans Thai, Inter, system-ui, Avenir, Helvetica, Arial,
+		sans-serif;
 	--black: rgba(0, 0, 0, 1);
 	--blue-shadeb05: rgba(236, 238, 250, 1);
 	--blue-shadeb1: rgba(217, 220, 245, 1);
