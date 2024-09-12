@@ -4,6 +4,10 @@ import EnrollBox from "common/components/EnrollSubject/CoreEnroll"; // Use one c
 import { useQuery } from "react-query";
 import { coreApi } from "core/connections";
 import useGlobalStore from "common/contexts/StoreContext";
+import { ChevronLeftIcon } from "@heroicons/react/20/solid"; // Import the Heroicon arrow icon
+import ConfirmPopup from "common/components/Back/ConfirmPopup";
+import { useNavigate } from "react-router-dom"; // For routing navigation
+import Navbar from "common/components/Navbar/Navbar";
 
 type CurriculumPayload = {
   major: string;
@@ -39,6 +43,7 @@ type EnrolledCoursesData = {
 function LongPlan() {
   const loadingContext = useLoadingContext();
   const { userData } = useGlobalStore();
+  const navigate = useNavigate(); // Initialize useNavigate for navigation
 
   const [groupedEnrolls, setGroupedEnrolls] =
     useState<EnrolledCoursesData | null>(null);
@@ -46,13 +51,14 @@ function LongPlan() {
     null
   );
   const [selectedPlan, setSelectedPlan] = useState<CurriculumPayload>({
-    name: "Select your study plan",
     major: "CPE",
     year: "2563",
     plan: "normal",
   });
 
   const [draggedCourse, setDraggedCourse] = useState<any>(null);
+  const [showPopup, setShowPopup] = useState(false); // New state for popup
+  const [nextPage, setNextPage] = useState<string | null>(null); // State to store the next page
 
   useEffect(() => {
     loadingContext.done();
@@ -146,6 +152,30 @@ function LongPlan() {
     setDraggedCourse(null);
   };
 
+  const handleShowExitPopup = (page: string) => {
+    setNextPage(page); // Store the next page the user wants to navigate to
+    setShowPopup(true); // Show the confirmation popup
+  };
+
+  const handleBackClick = () => {
+    handleShowExitPopup("back"); // Handle the back button as a navigation action
+  };
+
+  const handleConfirmExit = () => {
+    setShowPopup(false); // Close the popup
+    if (nextPage) {
+      if (nextPage === "back") {
+        navigate(-1); // Go back to the previous page
+      } else {
+        navigate(nextPage); // Navigate to the stored page
+      }
+    }
+  };
+
+  const handleCancelExit = () => {
+    setShowPopup(false); // Close the popup
+  };
+
   const renderCourseBox = (course: {
     groupName: string;
     courseNo: string;
@@ -174,6 +204,25 @@ function LongPlan() {
 
   return (
     <div className="w-screen flex flex-col justify-center items-center ">
+      <Navbar showExitPopup={handleShowExitPopup} />
+      {/* Back Button */}
+      <div className="relative">
+        <button
+          className="w-20 h-8 bg-[#ecedf9] rounded-[20px] flex justify-left items-center"
+          onClick={handleBackClick}
+        >
+          <ChevronLeftIcon className="w-7 h-7 text-[#7b83eb] ml-0" />
+        </button>
+      </div>
+
+      {/* Render the ConfirmationPopup component */}
+      <ConfirmPopup
+        show={showPopup}
+        onCancel={handleCancelExit}
+        onConfirm={handleConfirmExit}
+      />
+
+      {/* Course Boxes */}
       <div className="flex flex-col w-full">
         {semesters.map((semester) => (
           <div key={semester} className="flex flex-row w-full mb-4">
@@ -191,7 +240,7 @@ function LongPlan() {
                 <div
                   onDragOver={handleDragOver}
                   onDrop={() => handleDrop(year, semester)}
-                  className="p-4 border border-dashed border-gray-400"
+                  className="p-4 border border-solid border-gray-100 bg-white rounded-lg"
                 >
                   {groupedEnrolls[year][semester] ? (
                     groupedEnrolls[year][semester].map((course) => {
