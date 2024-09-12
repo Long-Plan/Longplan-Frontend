@@ -1,22 +1,46 @@
 import React, { useState } from "react";
-import { BaseBoxProps, SubjectBoxProps } from "utils/BoxUtils";
+import EnrollBox from "./EnrollBox"; // Adjust the import path
 import CourseDetailsPopup from "../Dialog/Coursedetail"; // Adjust import path
 
-export interface HoverableBoxProps extends SubjectBoxProps {
-  BoxComponent: React.FC<BaseBoxProps>;
+export interface HoverableEnrollBoxProps {
+  courseNo: string;
+  courseTitleEng: string;
+  courseCredit: number;
   courseFullName: string;
   courseCategory: string;
   courseRecommendedYear: string;
+  color: string;
+  borderColor: string;
+  textColor: string;
+  highlightColor: string;
+  dummy?: boolean;
+  remain?: boolean;
 }
 
-const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
-  BoxComponent,
+export interface EnrollBoxProps {
+  courseNo: string;
+  courseTitleEng: string;
+  courseCredit: number;
+  courseFullName: string;
+  courseCategory: string;
+  courseRecommendedYear: string;
+  remain?: boolean;
+  dummy?: boolean;
+}
+
+const HoverableEnrollBox: React.FC<HoverableEnrollBoxProps> = ({
   courseNo,
   courseTitleEng,
   courseCredit,
   courseFullName,
   courseCategory,
   courseRecommendedYear,
+  color,
+  borderColor,
+  textColor,
+  highlightColor,
+  dummy = false,
+  remain = false,
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup control state
 
@@ -26,15 +50,21 @@ const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
   };
 
   return (
-    <span className="relative">
+    <>
       {/* Render the course box */}
-      <div onClick={handleBoxClick}>
-        <BoxComponent
-          courseNo={courseNo}
-          courseTitleEng={courseTitleEng}
-          courseCredit={courseCredit}
-        />
-      </div>
+      <EnrollBox
+        courseNo={courseNo}
+        courseTitleEng={courseTitleEng}
+        courseCredit={courseCredit}
+        dummy={dummy}
+        remain={remain}
+        color={color}
+        borderColor={borderColor}
+        textColor={textColor}
+        highlightColor={highlightColor}
+        onClick={handleBoxClick} // Pass the click handler
+      />
+
       {/* Render the Course Detail Popup only when isPopupOpen is true */}
       {isPopupOpen && (
         <CourseDetailsPopup
@@ -44,7 +74,7 @@ const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
             code: courseNo,
             name: courseFullName,
             credits: courseCredit,
-            category: courseCategory,
+            category: courseCategory, // Example data, replace as needed
             recommendedYear: courseRecommendedYear,
             prerequisites: {
               frontCourses: [
@@ -64,8 +94,8 @@ const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
           }}
         />
       )}
-    </span>
+    </>
   );
 };
 
-export default HoverableBoxComponent;
+export default HoverableEnrollBox;

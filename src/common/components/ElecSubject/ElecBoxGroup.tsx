@@ -62,9 +62,9 @@ export const GEElecBox: React.FC<BaseBoxProps> = (props) => (
 export const LearnerElecBox: React.FC<BaseBoxProps> = (props) => (
   <StyledBox
     {...props}
-    borderColor="border-collection-1-yellow-shade-y5-5"
-    bgColor="bg-collection-1-yellow-shade-y5-5"
-    textColor="text-collection-1-yellow-shade-y5-5"
+    borderColor="border-collection-1-yellow-shade-y5"
+    bgColor="bg-collection-1-yellow-shade-y5"
+    textColor="text-collection-1-yellow-shade-y5"
     badgeColor="text-collection-1-yellow-shade-y7"
   />
 );

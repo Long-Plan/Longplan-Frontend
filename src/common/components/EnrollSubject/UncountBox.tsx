@@ -1,7 +1,11 @@
 import React from "react";
 import { BaseBoxProps } from "utils/BoxUtils";
 
-const UncountBox: React.FC<BaseBoxProps> = ({ courseNo, courseCredit , courseTitleEng}) => {
+const UncountBox: React.FC<BaseBoxProps> = ({
+  courseNo,
+  courseCredit,
+  courseTitleEng,
+}) => {
   return (
     <div className="inline-flex items-start justify-end gap-[10px] pl-0 pr-[5px] py-0 relative bg-gray-0 rounded-[10px] border border-solid border-gray-300 shadow-box-shadow">
       <div className="relative w-[7px] h-[43px] bg-gray-300 rounded-[10px_0px_0px_10px]" />
@@ -10,7 +14,12 @@ const UncountBox: React.FC<BaseBoxProps> = ({ courseNo, courseCredit , courseTit
           {courseNo}
           <br />
         </span>
-        <span className="text-[11px] leading-[19.7px]">{courseTitleEng.length > 0 ? courseTitleEng?.substring(1,0) + courseTitleEng?.substring(1,100).toLowerCase() : "Not founded"}</span>
+        <span className="text-[11px] leading-[19.7px]">
+          {courseTitleEng.length > 0
+            ? courseTitleEng?.substring(1, 0) +
+              courseTitleEng?.substring(1, 100).toLowerCase()
+            : "Not founded"}
+        </span>
       </div>
       <div className="inline-flex flex-col h-[19px] items-start justify-end gap-[10px] relative flex-[0_0_auto]">
         <div className="font-h2 text-gray-300 text-[10px] text-center tracking-[0] leading-[15.8px] whitespace-nowrap">

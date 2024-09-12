@@ -14,9 +14,8 @@ import PendingCreditBox from "./EnrollSubject/PendingCreditBox";
 import { coreApi } from "core/connections";
 import { useQuery } from "react-query";
 import useGlobalStore from "common/contexts/StoreContext";
-import PlanSelection from "./planselector/PlanSelection.tsx";
+import PlanSelection from "./PlanSelector/PlanSelection.tsx";
 import { toInteger } from "lodash-es";
-import PlanSettingPopup from "./planselector/PlanSetting.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -117,9 +116,6 @@ export const EnrollAndCredits: React.FC = () => {
     },
     enabled: !!userData, // Ensure the query runs only if userData is available
   });
-
-  console.log(curriculumData);
-  console.log(groupedEnrolls);
 
   // Combine useEffects into a single useEffect for managing body overflow and refetching data
   useEffect(() => {
@@ -467,9 +463,9 @@ export const EnrollAndCredits: React.FC = () => {
         group.requiredCourses.forEach(
           (course: {
             courseNo: string;
-            recommendYear: any;
-            recommendSemester: any;
-            courseTitleEng: any;
+            recommendYear: number;
+            recommendSemester: number;
+            courseTitleEng: string;
             credits: any;
           }) => {
             // Check if the course exists in groupedEnrolls
@@ -508,9 +504,9 @@ export const EnrollAndCredits: React.FC = () => {
         group.requiredCourses.forEach(
           (course: {
             courseNo: string;
-            recommendYear: any;
-            recommendSemester: any;
-            courseTitleEng: any;
+            recommendYear: number;
+            recommendSemester: number;
+            courseTitleEng: string;
             credits: any;
           }) => {
             // Check if the course exists in groupedEnrolls
@@ -673,6 +669,11 @@ export const EnrollAndCredits: React.FC = () => {
           <LearnerEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             courseCredit={Math.floor(course.credit)}
             remain={true}
           />
@@ -683,6 +684,11 @@ export const EnrollAndCredits: React.FC = () => {
           <CoCreEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             courseCredit={Math.floor(course.credit)}
             remain={true}
           />
@@ -693,6 +699,11 @@ export const EnrollAndCredits: React.FC = () => {
           <ActEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             courseCredit={Math.floor(course.credit)}
             remain={true}
           />
@@ -703,7 +714,12 @@ export const EnrollAndCredits: React.FC = () => {
           <GEElecEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
           />
         );
@@ -713,7 +729,12 @@ export const EnrollAndCredits: React.FC = () => {
           <CoreEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
           />
         );
@@ -723,7 +744,12 @@ export const EnrollAndCredits: React.FC = () => {
           <MajorEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
           />
         );
@@ -733,7 +759,12 @@ export const EnrollAndCredits: React.FC = () => {
           <MajorEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
           />
         );
@@ -743,7 +774,12 @@ export const EnrollAndCredits: React.FC = () => {
           <FreeEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
           />
         );
@@ -756,6 +792,29 @@ export const EnrollAndCredits: React.FC = () => {
         {content}
       </div>
     );
+  }
+
+  function findCourseRecommendYearForCurriculumData(courseNo: string) {
+    if (!curriculumData) return "";
+    for (const group of curriculumData.coreAndMajorGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return (
+            "ปี " + course.recommendYear + " เทอม " + course.recommendSemester
+          );
+        }
+      }
+    }
+    for (const group of curriculumData.geGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return (
+            "ปี " + course.recommendYear + " เทอม " + course.recommendSemester
+          );
+        }
+      }
+    }
+    return "ไม่มีข้อมูล";
   }
 
   function calculateRemainingCredits(course: Course[]) {
@@ -847,6 +906,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Learner Person"}
+                courseNo={""}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear=""
               />
             </div>
           );
@@ -859,6 +922,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Co-Creator"}
+                courseNo={""}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear={""}
               />
             </div>
           );
@@ -871,6 +938,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Active Citizen"}
+                courseNo={""}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear={""}
               />
             </div>
           );
@@ -882,7 +953,11 @@ export const EnrollAndCredits: React.FC = () => {
                 courseCredit={boxCredit}
                 remain={true}
                 dummy={true}
-                courseTitleEng={"GE Elective"}
+                courseNo={""}
+                courseTitleEng={"General Elective"}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear={""}
               />
             </div>
           );
@@ -895,6 +970,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Core"}
+                courseNo={""}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear={""}
               />
             </div>
           );
@@ -907,6 +986,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Major Required"}
+                courseNo={""}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear={""}
               />
             </div>
           );
@@ -919,6 +1002,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Major Elective"}
+                courseNo={""}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear={""}
               />
             </div>
           );
@@ -931,6 +1018,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Free Elective"}
+                courseNo={""}
+                courseFullName={""}
+                courseCategory={""}
+                courseRecommendedYear={""}
               />
             </div>
           );
@@ -1154,6 +1245,7 @@ export const EnrollAndCredits: React.FC = () => {
                                 totalCredits += Math.floor(
                                   toInteger(course.credit)
                                 );
+
                                 switch (groupName) {
                                   case "Learner Person":
                                   case "Co-Creator":
@@ -1194,6 +1286,11 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                       break;
@@ -1207,6 +1304,11 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                       break;
@@ -1220,6 +1322,11 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                       break;
@@ -1233,6 +1340,11 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                       break;
@@ -1246,6 +1358,11 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                       break;
@@ -1259,6 +1376,11 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                       break;
@@ -1272,6 +1394,11 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                       break;
@@ -1283,6 +1410,11 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.credit
                                           )}
                                           courseTitleEng={""}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
                                         />
                                       );
                                   }

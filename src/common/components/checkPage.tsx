@@ -2,9 +2,9 @@ import useGlobalStore from "common/contexts/StoreContext";
 import { coreApi } from "core/connections";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import TermPopup from "./term/termpopup";
-import PlanSettingPopup from "./planselector/PlanSetting";
-import CourseDetailsPopup from "./Dialog/Coursedetail";
+// import TermPopup from "./term/termpopup";
+// import PlanSettingPopup from "./PlanSelector/PlanSetting";
+// import CourseDetailsPopup from "./Dialog/Coursedetail";
 
 type CurriculumPayload = {
   major: string;

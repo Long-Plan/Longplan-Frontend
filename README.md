@@ -1,30 +1,15 @@
-# React + TypeScript + Vite
+# Project Summary
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is the frontend component of the Longplan application. Longplan is a comprehensive planning tool designed to help users organize and manage their long-term goals and tasks effectively.
 
-Currently, two official plugins are available:
+The frontend is built using modern web technologies such as HTML, CSS, and JavaScript. It provides a user-friendly interface for interacting with the Longplan application, allowing users to create, edit, and track their goals and tasks.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Key Features:
 
-## Expanding the ESLint configuration
+- User authentication and authorization
+- Goal creation and management
+- Task tracking and progress monitoring
+- Collaborative features for team projects
+- Responsive design for seamless usage across devices
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Happy planning with Longplan!

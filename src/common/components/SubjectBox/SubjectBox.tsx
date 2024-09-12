@@ -13,13 +13,17 @@ const SubjectBoxs: React.FC<SubjectBoxProps> = ({ data, BoxComponent }) => {
         <HoverableBoxComponent
           key={course.courseNo}
           courseNo={course.courseNo}
-          courseTitleEng={truncateTitle(
-            course.courseTitleEng?.substring(1, 0) +
-              course.courseTitleEng?.substring(1, 100).toLowerCase()
-          )}
+          courseTitleEng={truncateTitle(course.courseTitleEng)}
           courseFullName={course.courseTitleEng}
           courseCredit={course.credits}
           BoxComponent={BoxComponent}
+          courseCategory={data.groupName}
+          courseRecommendedYear={
+            "ปี " +
+              course.recommendYear?.toString() +
+              " เทอม " +
+              course.recommendSemester || "ไม่มีข้อมูล"
+          }
         />
       ))}
     </>

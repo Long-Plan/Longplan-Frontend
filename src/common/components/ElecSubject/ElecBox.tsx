@@ -16,6 +16,13 @@ const ElecBoxs: React.FC<ElecBoxProps> = ({ data, BoxComponent }) => {
           courseTitleEng={truncateTitle(course.courseTitleEng)}
           courseFullName={course.courseTitleEng}
           courseCredit={course.credits}
+          courseCategory={data.groupName}
+          courseRecommendedYear={
+            "ปี " +
+              course.recommendYear?.toString() +
+              " เทอม " +
+              course.recommendSemester || "ไม่มีข้อมูล"
+          }
           BoxComponent={BoxComponent}
         />
       ))}
