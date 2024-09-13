@@ -4,6 +4,8 @@ interface EnrollBoxProps {
   courseNo: string;
   courseTitleEng: string;
   courseCredit: number;
+  coursePrerequisites?: string[];
+  courseCorequisite?: string;
   dummy?: boolean;
   remain?: boolean;
   color: string;
@@ -29,7 +31,7 @@ const EnrollBox: React.FC<EnrollBoxProps> = ({
     <div
       className={`inline-flex items-start justify-end gap-[10px] pl-0 pr-[5px] py-0 relative ${
         remain ? "bg-white" : color
-      } rounded-[10px] border border-solid ${borderColor} shadow-box-shadow cursor-pointer`} // Added cursor-pointer for visual feedback
+      } rounded-[10px] border border-solid ${borderColor} shadow-box-shadow cursor-pointer transition-all duration-300 transform group hover:scale-110`} // Added cursor-pointer for visual feedback
       onClick={onClick} // Handle click event
     >
       <div

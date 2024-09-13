@@ -4,10 +4,8 @@ export interface CourseDetails {
   credits: number;
   category: string;
   recommendedYear: string;
-  prerequisites: {
-    frontCourses: { code: string; name: string; term: string }[];
-    allCourses: { code: string; name: string; term: string }[];
-  };
+  prerequisites?: string[]; // Make prerequisites optional in case it's missing
+  corequisite?: string; // Make corequisite optional as well
 }
 
 interface CourseDetailsPopupProps {
@@ -21,20 +19,20 @@ export default function CourseDetailsPopup({
   onClose,
   courseDetails,
 }: CourseDetailsPopupProps) {
-  // Return null if the popup is not open, ensuring it only renders when needed
+  // Return null if the popup is not open
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-80 flex justify-center items-center z-50">
-      {/* Overlay */}
+      {/* Overlay to close on click */}
       <div className="fixed inset-0" onClick={onClose}></div>
 
       {/* Popup Content */}
       <div className="bg-white rounded-xl p-12 w-full max-w-2xl shadow-2xl relative z-10">
         {/* Close Button */}
         <button
-          onClick={onClose} // Call onClose when button is clicked
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 bg-blue-shadeb05 rounded-[20px] p-2"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 bg-gray-200 rounded-full p-2"
         >
           ✕
         </button>
@@ -55,9 +53,7 @@ export default function CourseDetailsPopup({
           </p>
           <p>
             <strong>หมวดหมู่:</strong>{" "}
-            <a className="text-blue-600 hover:underline">
-              {courseDetails.category}
-            </a>
+            <span className="text-blue-shadeb5">{courseDetails.category}</span>
           </p>
           <p>
             <strong>ปีและภาคเรียนที่แนะนำ:</strong>{" "}
@@ -68,39 +64,40 @@ export default function CourseDetailsPopup({
         <hr className="my-4" />
 
         {/* Prerequisite Section */}
-        <h3 className="font-semibold my-4">
+        <h3 className="font-semibold my-4 text-start">
           วิชาที่ต้องผ่านก่อน (Pre-Requisite)
         </h3>
         <div className="space-y-2 text-start">
-          {/* Front Courses */}
-          <div>
-            <h4 className="text-base font-medium my-2">วิชาก่อนหน้า</h4>
+          {courseDetails.prerequisites &&
+          courseDetails.prerequisites.length > 0 ? (
             <ul className="list-disc ml-5">
-              {courseDetails.prerequisites.frontCourses.map((course, idx) => (
-                <li key={idx} className="text-blue-600">
-                  {course.code} {course.name}{" "}
-                  <span className="text-xs ml-2 px-2 py-1 rounded-full bg-blue-100 text-blue-600">
-                    {course.term}
-                  </span>
+              {courseDetails.prerequisites.map((prerequisite, index) => (
+                <li key={index} className="text-blue-shadeb5">
+                  {prerequisite}
                 </li>
               ))}
             </ul>
-          </div>
+          ) : (
+            <p className="font-semibold text-gray-400">
+              ไม่มีวิชาที่ต้องผ่านก่อน
+            </p> // If no prerequisites
+          )}
+        </div>
 
-          {/* All Required Courses */}
-          <div>
-            <h4 className="text-base font-medium">วิชาทั้งหมด</h4>
+        {/* Corequisite Section */}
+        <h3 className="font-semibold my-4 text-start">
+          วิชาที่ต้องเรียนคู่กัน (Co-requisite)
+        </h3>
+        <div className="space-y-2 text-start">
+          {courseDetails.corequisite ? (
             <ul className="list-disc ml-5">
-              {courseDetails.prerequisites.allCourses.map((course, idx) => (
-                <li key={idx} className="text-blue-600 p-1">
-                  {course.code} {course.name}{" "}
-                  <span className="text-xs ml-2 px-2 py-1 rounded-full bg-blue-100 text-blue-600">
-                    {course.term}
-                  </span>
-                </li>
-              ))}
+              <li className="text-blue-shadeb5">{courseDetails.corequisite}</li>
             </ul>
-          </div>
+          ) : (
+            <p className="font-semibold text-gray-400">
+              ไม่มีวิชาที่ต้องเรียนคู่กัน
+            </p> // If no corequisite
+          )}
         </div>
       </div>
     </div>

@@ -18,7 +18,7 @@ const StyledBox: React.FC<StyledBoxProps> = ({
   badgeColor,
 }) => (
   <div
-    className={`hover:bg-gray-100 transition-colors duration-200 inline-flex items-start justify-end gap-[14px] pr-[5px] py-0 relative bg-white rounded-[10px] border border-solid ${borderColor} shadow-box-shadow mx-5`}
+    className={`transition-all duration-300 transform group hover:scale-110 inline-flex items-start justify-end gap-[14px] pr-[5px] py-0 relative bg-white rounded-[10px] border border-solid ${borderColor} shadow-box-shadow mx-5`}
   >
     <div
       className={`relative w-[7px] h-[42px] ${bgColor} rounded-[10px_0px_0px_10px]`}

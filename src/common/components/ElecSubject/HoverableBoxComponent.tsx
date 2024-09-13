@@ -7,6 +7,8 @@ export interface HoverableBoxProps extends SubjectBoxProps {
   courseFullName: string;
   courseCategory: string;
   courseRecommendedYear: string;
+  coursePrerequisites: string[];
+  courseCorequisite?: string;
 }
 
 const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
@@ -17,6 +19,8 @@ const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
   courseFullName,
   courseCategory,
   courseRecommendedYear,
+  coursePrerequisites,
+  courseCorequisite,
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); // Popup control state
 
@@ -26,7 +30,7 @@ const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
   };
 
   return (
-    <span className="relative">
+    <>
       {/* Render the course box */}
       <div onClick={handleBoxClick}>
         <BoxComponent
@@ -44,27 +48,14 @@ const HoverableBoxComponent: React.FC<HoverableBoxProps> = ({
             code: courseNo,
             name: courseFullName,
             credits: courseCredit,
-            category: courseCategory,
+            category: courseCategory, // Example data, replace as needed
             recommendedYear: courseRecommendedYear,
-            prerequisites: {
-              frontCourses: [
-                { code: "000000", name: "Algorithms", term: "ปี 2 เทอม 2" },
-              ],
-              allCourses: [
-                { code: "000000", name: "Algorithms", term: "ปี 2 เทอม 2" },
-                { code: "000000", name: "Discrete Math", term: "ปี 2 เทอม 1" },
-                { code: "000000", name: "Data Structure", term: "ปี 2 เทอม 1" },
-                {
-                  code: "000000",
-                  name: "Computer Programming",
-                  term: "ปี 1 เทอม 2",
-                },
-              ],
-            },
+            prerequisites: coursePrerequisites, // Pass the prerequisites data
+            corequisite: courseCorequisite, // Pass the corequisite data
           }}
         />
       )}
-    </span>
+    </>
   );
 };
 

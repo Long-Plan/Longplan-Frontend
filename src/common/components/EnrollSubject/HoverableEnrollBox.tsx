@@ -9,6 +9,8 @@ export interface HoverableEnrollBoxProps {
   courseFullName: string;
   courseCategory: string;
   courseRecommendedYear: string;
+  coursePrerequisites?: string[];
+  courseCorequisite?: string;
   color: string;
   borderColor: string;
   textColor: string;
@@ -24,6 +26,8 @@ export interface EnrollBoxProps {
   courseFullName: string;
   courseCategory: string;
   courseRecommendedYear: string;
+  coursePrerequisites?: string[];
+  courseCorequisite?: string;
   remain?: boolean;
   dummy?: boolean;
 }
@@ -35,6 +39,8 @@ const HoverableEnrollBox: React.FC<HoverableEnrollBoxProps> = ({
   courseFullName,
   courseCategory,
   courseRecommendedYear,
+  coursePrerequisites,
+  courseCorequisite,
   color,
   borderColor,
   textColor,
@@ -56,6 +62,8 @@ const HoverableEnrollBox: React.FC<HoverableEnrollBoxProps> = ({
         courseNo={courseNo}
         courseTitleEng={courseTitleEng}
         courseCredit={courseCredit}
+        coursePrerequisites={coursePrerequisites}
+        courseCorequisite={courseCorequisite}
         dummy={dummy}
         remain={remain}
         color={color}
@@ -76,21 +84,8 @@ const HoverableEnrollBox: React.FC<HoverableEnrollBoxProps> = ({
             credits: courseCredit,
             category: courseCategory, // Example data, replace as needed
             recommendedYear: courseRecommendedYear,
-            prerequisites: {
-              frontCourses: [
-                { code: "000000", name: "Algorithms", term: "ปี 2 เทอม 2" },
-              ],
-              allCourses: [
-                { code: "000000", name: "Algorithms", term: "ปี 2 เทอม 2" },
-                { code: "000000", name: "Discrete Math", term: "ปี 2 เทอม 1" },
-                { code: "000000", name: "Data Structure", term: "ปี 2 เทอม 1" },
-                {
-                  code: "000000",
-                  name: "Computer Programming",
-                  term: "ปี 1 เทอม 2",
-                },
-              ],
-            },
+            prerequisites: coursePrerequisites, // Pass the prerequisites data
+            corequisite: courseCorequisite, // Pass the corequisite data
           }}
         />
       )}

@@ -10,6 +10,7 @@ const FreeEnrollBox: React.FC<EnrollBoxProps> = (props) => {
       courseCredit={props.courseCredit || 0}
       courseFullName="Free Elective"
       courseRecommendedYear="ไม่มีข้อมูล"
+      coursePrerequisites={props.coursePrerequisites || []}
       courseCategory="Free Elective"
       color="bg-collection-1-black-sl"
       borderColor="border-collection-1-black-shade-bl4"

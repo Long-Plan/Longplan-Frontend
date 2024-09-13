@@ -46,6 +46,8 @@ type Course = {
   courseTitleEng: string;
   recommendYear: number;
   recommendSemester: number;
+  prerequisites?: string[];
+  corequisites?: string;
 };
 
 type Plan = {
@@ -465,8 +467,8 @@ export const EnrollAndCredits: React.FC = () => {
             courseNo: string;
             recommendYear: number;
             recommendSemester: number;
+            credits: number;
             courseTitleEng: string;
-            credits: any;
           }) => {
             // Check if the course exists in groupedEnrolls
             let courseExists = false;
@@ -506,8 +508,8 @@ export const EnrollAndCredits: React.FC = () => {
             courseNo: string;
             recommendYear: number;
             recommendSemester: number;
+            credits: number;
             courseTitleEng: string;
-            credits: any;
           }) => {
             // Check if the course exists in groupedEnrolls
             let courseExists = false;
@@ -675,6 +677,8 @@ export const EnrollAndCredits: React.FC = () => {
             )}
             courseCategory={groupName}
             courseCredit={Math.floor(course.credit)}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
             remain={true}
           />
         );
@@ -689,6 +693,8 @@ export const EnrollAndCredits: React.FC = () => {
               course.courseNo
             )}
             courseCategory={groupName}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
             courseCredit={Math.floor(course.credit)}
             remain={true}
           />
@@ -706,6 +712,8 @@ export const EnrollAndCredits: React.FC = () => {
             courseCategory={groupName}
             courseCredit={Math.floor(course.credit)}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -721,6 +729,8 @@ export const EnrollAndCredits: React.FC = () => {
             )}
             courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -736,6 +746,8 @@ export const EnrollAndCredits: React.FC = () => {
             )}
             courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -751,6 +763,8 @@ export const EnrollAndCredits: React.FC = () => {
             )}
             courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -766,6 +780,8 @@ export const EnrollAndCredits: React.FC = () => {
             )}
             courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -781,6 +797,8 @@ export const EnrollAndCredits: React.FC = () => {
             )}
             courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
     }
@@ -815,6 +833,37 @@ export const EnrollAndCredits: React.FC = () => {
       }
     }
     return "ไม่มีข้อมูล";
+  }
+
+  function findPreReqFromCurriculumData(courseNo: string) {
+    if (!curriculumData) return [];
+    for (const group of curriculumData.coreAndMajorGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return course.prerequisites;
+        }
+      }
+    }
+    for (const group of curriculumData.geGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return course.prerequisites;
+        }
+      }
+    }
+    return [];
+  }
+
+  function findCoReqFromCurriculumData(courseNo: string) {
+    if (!curriculumData) return "";
+    for (const group of curriculumData.coreAndMajorGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return course.corequisite || "";
+        }
+      }
+    }
+    return "";
   }
 
   function calculateRemainingCredits(course: Course[]) {
@@ -906,10 +955,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Learner Person"}
-                courseNo={""}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear=""
+                courseNo={"000000"}
+                courseFullName={"Learner Person Course"}
+                courseCategory={groupName}
+                courseRecommendedYear="ไม่มีข้อมูล"
               />
             </div>
           );
@@ -922,10 +971,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Co-Creator"}
-                courseNo={""}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear={""}
+                courseNo={"000000"}
+                courseFullName={"Co-Creator Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -938,10 +987,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Active Citizen"}
-                courseNo={""}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear={""}
+                courseNo={"000000"}
+                courseFullName={"Active Citizen Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -953,11 +1002,11 @@ export const EnrollAndCredits: React.FC = () => {
                 courseCredit={boxCredit}
                 remain={true}
                 dummy={true}
-                courseNo={""}
+                courseNo={"000000"}
                 courseTitleEng={"General Elective"}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear={""}
+                courseFullName={"General Elective Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -970,10 +1019,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Core"}
-                courseNo={""}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear={""}
+                courseNo={"000000"}
+                courseFullName={"Core Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -986,10 +1035,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Major Required"}
-                courseNo={""}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear={""}
+                courseNo={"000000"}
+                courseFullName={"Major Required Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -1002,10 +1051,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Major Elective"}
-                courseNo={""}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear={""}
+                courseNo={"000000"}
+                courseFullName={"Major Elective Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -1018,10 +1067,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Free Elective"}
-                courseNo={""}
-                courseFullName={""}
-                courseCategory={""}
-                courseRecommendedYear={""}
+                courseNo={"000000"}
+                courseFullName={"Free Elective Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -1291,6 +1340,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1309,6 +1364,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1327,6 +1388,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1345,6 +1412,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1363,6 +1436,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1381,6 +1460,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1399,6 +1484,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1415,6 +1506,12 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.courseNo
                                           )}
                                           courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                   }

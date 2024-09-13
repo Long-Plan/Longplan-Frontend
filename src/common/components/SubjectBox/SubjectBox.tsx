@@ -16,6 +16,7 @@ const SubjectBoxs: React.FC<SubjectBoxProps> = ({ data, BoxComponent }) => {
           courseTitleEng={truncateTitle(course.courseTitleEng)}
           courseFullName={course.courseTitleEng}
           courseCredit={course.credits}
+          coursePrerequisites={course.prerequisites}
           BoxComponent={BoxComponent}
           courseCategory={data.groupName}
           courseRecommendedYear={

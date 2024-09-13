@@ -17,6 +17,7 @@ const ElecBoxs: React.FC<ElecBoxProps> = ({ data, BoxComponent }) => {
           courseFullName={course.courseTitleEng}
           courseCredit={course.credits}
           courseCategory={data.groupName}
+          coursePrerequisites={course.prerequisites}
           courseRecommendedYear={
             "ปี " +
               course.recommendYear?.toString() +
