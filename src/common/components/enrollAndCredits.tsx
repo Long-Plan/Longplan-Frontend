@@ -16,6 +16,8 @@ import { useQuery } from "react-query";
 import useGlobalStore from "common/contexts/StoreContext";
 import PlanSelection from "./PlanSelector/PlanSelection.tsx";
 import { toInteger } from "lodash-es";
+import SummaryBox from "./SummaryBox/CreditSummary.tsx";
+import CourseRemainBox from "./SummaryBox/CourseRemainBox.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -1686,328 +1688,34 @@ export const EnrollAndCredits: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="static top-50 w-70 p-4 bg-white   rounded-[20px]">
-          {/* Display the requiredCredits and sum of credits for each groupName */}
-          <div className="mt-4">
-            <h3 className="text-center my-4">หน่วยกิตสะสม</h3>
 
-            {/* GE */}
-            <div className="w-auto h-12 p-1 bg-yellow-50 rounded-tl-2xl rounded-tr-2xl border border-solid border-amber-300 flex  items-center gap-8">
-              <p className="flex flex-col col-span-1 justify-center items-center ">
-                <span className="text-collection-1-yellow-shade-y7 text-sm ">
-                  {groupCredits["Learner Person"] +
-                    groupCredits["Co-Creator"] +
-                    groupCredits["Active Citizen"] +
-                    groupCredits["Elective"] >=
-                    totalGeCredits && (
-                    <span
-                      role="img"
-                      aria-label="check"
-                      className="inline-block mr-2"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: "var(--collection-1-yellow-shade-y2)",
-                        textAlign: "center",
-                        lineHeight: "20px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  หมวดศึกษาทั่วไป
-                </span>
-                <span className="text-collection-1-yellow-shade-y7 text-xs font-medium">
-                  (General Education)
-                </span>
-              </p>
-              <div className=" px-5 bg-white rounded-lg border border-solid border-collection-1-yellow-shade-y6 justify-center items-center gap-2.5 inline-flex">
-                <div className="text-center text-collection-1-yellow-shade-y6 text-sm font-bold">
-                  {`${
-                    groupCredits["Learner Person"] +
-                    groupCredits["Co-Creator"] +
-                    groupCredits["Active Citizen"] +
-                    groupCredits["Elective"]
-                  } / ${totalGeCredits}`}
-                </div>
-              </div>
-            </div>
+        <SummaryBox
+          groupCredits={groupCredits}
+          totalCredits={totalCredits}
+          totalGeCredits={totalGeCredits}
+          totalCoreAndMajorEarnedCredits={totalCoreAndMajorEarnedCredits}
+          totalCoreAndMajorRequiredCredits={totalCoreAndMajorRequiredCredits}
+          curriculumData={curriculumData}
+        />
 
-            <div className="rounded-bl-2xl rounded-br-2xl bg-white px-4 py-1 border border-solid border-amber-300 mb-4 ">
-              {[
-                ...curriculumData.geGroups,
-                // ...curriculumData.coreAndMajorGroups,
-              ].map(
-                (
-                  group: { groupName: any; requiredCredits: any },
-                  index: React.Key | null | undefined
-                ) => (
-                  <p
-                    className={`my-3 flex text-[14px] text-${getColorForGroupName(
-                      group.groupName
-                    )} `}
-                  >
-                    <li key={index}>
-                      {" "}
-                      {`${group.groupName} :
-                      
-						  ${groupCredits[group.groupName] || "0"} / ${group.requiredCredits}`}
-                      {groupCredits[group.groupName] ===
-                        group.requiredCredits && (
-                        <span
-                          role="img"
-                          aria-label="check"
-                          className="ml-2"
-                          style={{
-                            display: "inline-block",
-                            width: "20px",
-                            height: "20px",
-                            borderRadius: "50%",
-                            backgroundColor:
-                              "var(--collection-1-yellow-shade-y2)",
-                            textAlign: "center",
-                            lineHeight: "20px",
-                          }}
-                        >
-                          ✓
-                        </span>
-                      )}
-                    </li>{" "}
-                  </p>
-                )
-              )}
-            </div>
-
-            {/* Major */}
-            <div className="w-auto h-12 p-1 bg-collection-1-b-sl rounded-tl-2xl rounded-tr-2xl border border-solid border-blue-shadeb4 flex  items-center gap-4">
-              <p className="flex flex-col col-span-1 justify-center items-center ">
-                <span className="text-blue-shadeb5 text-sm ">
-                  {totalCoreAndMajorEarnedCredits >=
-                    totalCoreAndMajorRequiredCredits && (
-                    <span
-                      role="img"
-                      aria-label="check"
-                      className="inline-block mr-2"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: "#B0B8FF",
-                        textAlign: "center",
-                        lineHeight: "20px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  หมวดวิชาเฉพาะ
-                </span>
-                <span className="text-blue-shadeb5 text-xs font-medium">
-                  (Major Requirements)
-                </span>
-              </p>
-              <div className=" px-5 bg-white rounded-lg border border-solid border-blue-shadeb4 justify-center items-center gap-2.5 inline-flex">
-                <div className="text-center text-blue-shadeb5 text-sm font-bold">
-                  {`${totalCoreAndMajorEarnedCredits} / ${totalCoreAndMajorRequiredCredits}`}
-                </div>
-              </div>
-            </div>
-            <div className="rounded-bl-2xl rounded-br-2xl bg-white px-4 py-1 border border-solid border-blue-shadeb4 text-collection-1-yellow-shade-y7 mb-4">
-              {[
-                // ...curriculumData.geGroups,
-                ...curriculumData.coreAndMajorGroups,
-              ].map(
-                (
-                  group: { groupName: any; requiredCredits: any },
-                  index: React.Key | null | undefined
-                ) => (
-                  <p
-                    className={`my-3 text-[14px] text-${getColorForGroupName(
-                      group.groupName
-                    )} `}
-                  >
-                    <li key={index}>
-                      {" "}
-                      {`${group.groupName} : 
-						  ${groupCredits[group.groupName] || "0"} / ${group.requiredCredits}`}
-                      {groupCredits[group.groupName] >=
-                        group.requiredCredits && (
-                        <span
-                          role="img"
-                          aria-label="check"
-                          className="ml-2"
-                          style={{
-                            display: "inline-block",
-                            width: "20px",
-                            height: "20px",
-                            borderRadius: "50%",
-                            backgroundColor:
-                              "var(--collection-1-yellow-shade-y2)",
-                            textAlign: "center",
-                            lineHeight: "20px",
-                          }}
-                        >
-                          ✓
-                        </span>
-                      )}
-                    </li>{" "}
-                  </p>
-                )
-              )}
-            </div>
-
-            {/* FreeElec */}
-            <div className="w-auto h-12 p-1 bg-neutral-100 rounded-2xl border border-solid border-neutral-400 flex  items-center gap-8">
-              <p className="flex flex-col col-span-1 justify-center items-center">
-                <span className="text-neutral-600 text-sm">
-                  {groupCredits["Free Elective"] >=
-                    curriculumData.freeElectiveCredits && (
-                    <span
-                      role="img"
-                      aria-label="check"
-                      className="inline-block mr-2"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: "#C3C3C3",
-                        textAlign: "center",
-                        lineHeight: "20px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  หมวดวิชาเลือกเสรี
-                </span>
-                <span className="text-neutral-600 text-xs font-medium">
-                  (Free Electives)
-                </span>
-              </p>
-              <div className=" px-5 bg-white rounded-lg border border-solid border-neutral-600 flex justify-center items-center">
-                <div className="text-center text-neutral-600 text-sm font-bold ">
-                  {`${groupCredits["Free Elective"] || "0"} / ${
-                    curriculumData.freeElectiveCredits
-                  }`}
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Display the total sum of credits */}
-          <div className="mt-5">
-            <h3 className="text-center">หน่วยกิตรวม</h3>
-            <p className="text-center text-collection-1-black-shade-bl2 m-2 text-sm">{`คุณเรียนไปแล้ว ${totalCredits} จาก ${
-              curriculumData.requiredCredits || " "
-            } หน่วยกิต`}</p>
-            {/* Progress Bar */}
-            <div className="relative pt-3">
-              <div className="flex mb-2 items-center justify-between">
-                <div>
-                  <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-shadeb3 bg-blue-shadeb05">
-                    หน่วยกิตสะสม
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-semibold inline-block text-blue-shadeb3 ">
-                    {`${Math.min(
-                      totalCredits,
-                      curriculumData.requiredCredits
-                    )} / ${curriculumData.requiredCredits}`}
-                  </span>
-                </div>
-              </div>
-              <div className="h-4 relative w-full rounded-full overflow-hidden bg-blue-shadeb05 border border-solid border-1 border-blue-shadeb5">
-                <div
-                  className="h-full rounded-full bg-blue-shadeb3"
-                  style={{
-                    width: `${Math.min(
-                      (totalCredits / curriculumData.requiredCredits) * 100,
-                      100
-                    )}%`,
-                  }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {(remainLearner > 0 ||
-          remainCocre > 0 ||
-          remainAct > 0 ||
-          remainElec > 0 ||
-          remainCore > 0 ||
-          remainMJreq > 0 ||
-          remainMJelec > 0 ||
-          remainFRtotal > 0) && (
-          <div className="ml-4 flex flex-col bg-white rounded-[20px] p-4">
-            <h2 className="flex m-2 mb-5 bg-gray-100 p-2 rounded-[20px] text-[14px]">
-              หน่วยกิตคงเหลือ
-            </h2>
-            <p className={`mb-4 text-center text-[12px] text-gray-500`}>
-              วิชาที่ยังไม่ได้เรียน
-            </p>
-            <div className="grid grid-rows-auto justify-center items-center">
-              {remainGEtotal > 0 &&
-                remainLearner + remainCocre + remainAct + remainElec > 0 && (
-                  <div
-                    className={`flex flex-col bg-yellow-50 p-2 rounded-[20px] border border-solid border-amber-300 mb-4 items-center`}
-                  >
-                    <p
-                      className={`text-collection-1-yellow-shade-y7 text-xs font-medium`}
-                    >
-                      General Education
-                    </p>
-                    {remainLearner > 0 && (
-                      <>
-                        {renderRemainTotalBox(remainLearner, "Learner Person")}
-                      </>
-                    )}
-                    {remainCocre > 0 && (
-                      <>{renderRemainTotalBox(remainCocre, "Co-Creator")}</>
-                    )}
-                    {remainAct > 0 && (
-                      <>{renderRemainTotalBox(remainAct, "Active Citizen")}</>
-                    )}
-                    {remainElec > 0 && (
-                      <>{renderRemainTotalBox(remainElec, "Elective")}</>
-                    )}
-                  </div>
-                )}
-              {remainMJtotal > 0 &&
-                remainCore + remainMJreq + remainMJelec > 0 && (
-                  <div
-                    className={`flex flex-col bg-blue-shadeb05 p-2 rounded-[20px] border border-solid border-blue-shadeb4 items-center mb-4`}
-                  >
-                    <p className={`text-blue-shadeb5 text-xs font-medium`}>
-                      Major Requirements
-                    </p>
-                    {remainCore > 0 && (
-                      <>{renderRemainTotalBox(remainCore, "Core")}</>
-                    )}
-                    {remainMJreq > 0 && (
-                      <>{renderRemainTotalBox(remainMJreq, "Major Required")}</>
-                    )}
-                    {remainMJelec > 0 && (
-                      <>
-                        {renderRemainTotalBox(remainMJelec, "Major Elective")}
-                      </>
-                    )}
-                  </div>
-                )}
-              {remainFRtotal > 0 && (
-                <div
-                  className={`flex flex-col bg-neutral-100 p-2 rounded-[20px] border border-solid border-neutral-400 items-center mb-4`}
-                >
-                  <p className={`text-neutral-600 text-xs font-medium`}>
-                    Free Elective
-                  </p>
-                  {renderRemainTotalBox(remainFRtotal, "Free Elective")}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        <CourseRemainBox
+          remainLearner={remainLearner}
+          remainCocre={remainCocre}
+          remainAct={remainAct}
+          remainElec={remainElec}
+          remainCore={remainCore}
+          remainMJreq={remainMJreq}
+          remainMJelec={remainMJelec}
+          remainFRtotal={remainFRtotal}
+          remainGEtotal={remainGEtotal}
+          remainMJtotal={remainMJtotal}
+          renderRemainTotalBox={function (
+            remainValue: number,
+            groupName: string
+          ): JSX.Element {
+            return <>{renderRemainTotalBox(remainValue, groupName)}</>;
+          }}
+        />
       </div>
       {/*<div className="my-10 bg-white bg-[url('/imgs/creditBG.svg')] rounded-2xl p-10 pt-4 pb-14 bg-cover bg-bottom">*/}
       {/*  <div className="text-center">*/}
