@@ -1,6 +1,7 @@
 // CreditSummary.tsx
 const CreditSummary = ({
   title,
+  titleEng,
   totalCredits,
   earnedCredits,
   maxCredits,
@@ -10,6 +11,7 @@ const CreditSummary = ({
   checkBgColor,
 }: {
   title: string;
+  titleEng: string;
   totalCredits: number;
   earnedCredits: number;
   maxCredits: number;
@@ -21,19 +23,24 @@ const CreditSummary = ({
   <div
     className={`w-auto h-12 p-1 ${bgColor} rounded-tl-2xl rounded-tr-2xl border-b-0 border border-solid ${borderColor} flex items-center gap-8`}
   >
-    <p className="flex flex-col col-span-1 justify-center items-center ">
-      <span className={`${textColor} text-sm`}>
+    <p className="flex flex-row justify-center items-center ml-4">
+      <span className={`${textColor} text-sm flex flex-row items-start `}>
         {earnedCredits >= maxCredits && (
           <span
-            className={`inline-block mx-2 px-[4px] border border-solid ${borderColor} rounded-full text-center`}
+            className={`text-xs mx-2 px-[4px] border border-solid ${borderColor} rounded-full text-center items-center justify-center`}
             style={{ backgroundColor: checkBgColor }}
           >
             ✓
           </span>
         )}
-        {title}
+
+        <div className="grid grid-rows-auto">
+          {title}
+          <span
+            className={`${textColor} text-xs font-medium text-center`}
+          >{`(${titleEng})`}</span>
+        </div>
       </span>
-      <span className={`${textColor} text-xs font-medium`}>{`(${title})`}</span>
     </p>
     <div
       className={`ml-auto px-5 mr-2 bg-white rounded-[10px] border border-solid ${borderColor} justify-center items-center gap-2.5 inline-flex`}
@@ -47,6 +54,7 @@ const CreditSummary = ({
 
 const FreeSummary = ({
   title,
+  titleEng,
   totalCredits,
   earnedCredits,
   maxCredits,
@@ -56,6 +64,7 @@ const FreeSummary = ({
   checkBgColor,
 }: {
   title: string;
+  titleEng: string;
   totalCredits: number;
   earnedCredits: number;
   maxCredits: number;
@@ -67,19 +76,24 @@ const FreeSummary = ({
   <div
     className={`w-auto h-12 p-1 ${bgColor} rounded-tl-2xl rounded-2xl border border-solid ${borderColor} flex items-center gap-8`}
   >
-    <p className="flex flex-col col-span-1 justify-center items-center ">
-      <span className={`${textColor} text-sm`}>
+    <p className="flex flex-row justify-center items-center ml-4">
+      <span className={`${textColor} text-sm flex flex-row items-start `}>
         {earnedCredits >= maxCredits && (
           <span
-            className={`inline-block mx-2 px-[4px] border border-solid ${borderColor} rounded-full text-center`}
+            className={`text-xs mx-2 px-[4px] border border-solid ${borderColor} rounded-full text-center items-center justify-center`}
             style={{ backgroundColor: checkBgColor }}
           >
             ✓
           </span>
         )}
-        {title}
+
+        <div className="grid grid-rows-auto">
+          {title}
+          <span
+            className={`${textColor} text-xs font-medium text-center`}
+          >{`(${titleEng})`}</span>
+        </div>
       </span>
-      <span className={`${textColor} text-xs font-medium`}>{`(${title})`}</span>
     </p>
     <div
       className={`ml-auto px-5 mr-2 bg-white rounded-[10px] border border-solid ${borderColor} justify-center items-center gap-2.5 inline-flex`}
@@ -207,6 +221,7 @@ const SummaryBox = ({
         {/* General Education Summary */}
         <CreditSummary
           title="หมวดศึกษาทั่วไป"
+          titleEng="General Education"
           totalCredits={totalGeCredits}
           earnedCredits={
             groupCredits["Learner Person"] +
@@ -231,6 +246,7 @@ const SummaryBox = ({
         {/* Major Requirements Summary */}
         <CreditSummary
           title="หมวดวิชาเฉพาะ"
+          titleEng="Major Requirements"
           totalCredits={totalCoreAndMajorRequiredCredits}
           earnedCredits={totalCoreAndMajorEarnedCredits}
           maxCredits={totalCoreAndMajorRequiredCredits}
@@ -250,6 +266,7 @@ const SummaryBox = ({
         {/* Free Elective Summary */}
         <FreeSummary
           title="หมวดวิชาเลือกเสรี"
+          titleEng="Free Elective"
           totalCredits={curriculumData.freeElectiveCredits}
           earnedCredits={groupCredits["Free Elective"]}
           maxCredits={curriculumData.freeElectiveCredits}

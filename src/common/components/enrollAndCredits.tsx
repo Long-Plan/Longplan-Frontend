@@ -1115,12 +1115,12 @@ export const EnrollAndCredits: React.FC = () => {
         </div>
       )}
       <div className="pb-10"></div>
-      <div className="flex">
+      <div className="flex flex-row items-start space-x-4">
         <div
-          className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4`}
+          className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4 shadow-lg border border-gray-200`}
         >
           <div className="rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
-            <div className="mt-[74px] ml-4 flex-row">
+            <div className="mt-[56px] ml-4 flex-row">
               <div
                 style={{
                   height: `${maxGeneralEducationCourses * heightDiv + 26}px`,
@@ -1537,6 +1537,15 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseTitleEng || ""
                                         )}
                                         courseCredit={Math.floor(course.credit)}
+                                        courseFullName={
+                                          courseTitleEng || "Not found"
+                                        }
+                                        courseCategory={
+                                          groupName || "Not found"
+                                        }
+                                        courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                          course.courseNo
+                                        )}
                                       />
                                     </div>
                                   );
@@ -1689,33 +1698,41 @@ export const EnrollAndCredits: React.FC = () => {
           </div>
         </div>
 
-        <SummaryBox
-          groupCredits={groupCredits}
-          totalCredits={totalCredits}
-          totalGeCredits={totalGeCredits}
-          totalCoreAndMajorEarnedCredits={totalCoreAndMajorEarnedCredits}
-          totalCoreAndMajorRequiredCredits={totalCoreAndMajorRequiredCredits}
-          curriculumData={curriculumData}
-        />
+        <div className="bg-white p-6 rounded-[20px] shadow-lg border border-gray-200">
+          <div className="mb-6">
+            <SummaryBox
+              groupCredits={groupCredits}
+              totalCredits={totalCredits}
+              totalGeCredits={totalGeCredits}
+              totalCoreAndMajorEarnedCredits={totalCoreAndMajorEarnedCredits}
+              totalCoreAndMajorRequiredCredits={
+                totalCoreAndMajorRequiredCredits
+              }
+              curriculumData={curriculumData}
+            />
+          </div>
 
-        <CourseRemainBox
-          remainLearner={remainLearner}
-          remainCocre={remainCocre}
-          remainAct={remainAct}
-          remainElec={remainElec}
-          remainCore={remainCore}
-          remainMJreq={remainMJreq}
-          remainMJelec={remainMJelec}
-          remainFRtotal={remainFRtotal}
-          remainGEtotal={remainGEtotal}
-          remainMJtotal={remainMJtotal}
-          renderRemainTotalBox={function (
-            remainValue: number,
-            groupName: string
-          ): JSX.Element {
-            return <>{renderRemainTotalBox(remainValue, groupName)}</>;
-          }}
-        />
+          <div>
+            <CourseRemainBox
+              remainLearner={remainLearner}
+              remainCocre={remainCocre}
+              remainAct={remainAct}
+              remainElec={remainElec}
+              remainCore={remainCore}
+              remainMJreq={remainMJreq}
+              remainMJelec={remainMJelec}
+              remainFRtotal={remainFRtotal}
+              remainGEtotal={remainGEtotal}
+              remainMJtotal={remainMJtotal}
+              renderRemainTotalBox={function (
+                remainValue: number,
+                groupName: string
+              ): JSX.Element {
+                return <>{renderRemainTotalBox(remainValue, groupName)}</>;
+              }}
+            />
+          </div>
+        </div>
       </div>
       {/*<div className="my-10 bg-white bg-[url('/imgs/creditBG.svg')] rounded-2xl p-10 pt-4 pb-14 bg-cover bg-bottom">*/}
       {/*  <div className="text-center">*/}
