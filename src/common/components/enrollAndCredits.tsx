@@ -19,6 +19,7 @@ import { toInteger } from "lodash-es";
 import SummaryBox from "./SummaryBox/CreditSummary.tsx";
 import CourseRemainBox from "./SummaryBox/CourseRemainBox.tsx";
 import InfoModal from "./Popup/InfoModal.tsx";
+import PlanSettingPopup from "./PlanSelector/PlanSettingPopup.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -108,6 +109,7 @@ export const EnrollAndCredits: React.FC = () => {
   });
   const [showInfo, setShowInfo] = useState(false);
   const [showInfoBox, setShowInfoBox] = useState(false);
+  const [showPlanSetting, setShowPlanSetting] = useState(true);
 
   const { refetch } = useQuery("curriculum", fetchData, {
     onSuccess: async (data: {
@@ -150,6 +152,10 @@ export const EnrollAndCredits: React.FC = () => {
   if (!curriculumData) {
     return null; // or a loading indicator, depending on your UI requirements
   }
+
+  const handleClose = () => {
+    setShowPlanSetting(false);
+  };
 
   // Function to find courseTitleEng based on courseNo
   const findCourseTitle = (
@@ -1076,6 +1082,9 @@ export const EnrollAndCredits: React.FC = () => {
 
   return (
     <div className={`flex flex-col items-center w-full pt-8 ml-10`}>
+      {showPlanSetting && (
+        <PlanSettingPopup onClose={handleClose} mode={true} />
+      )}
       {showInfoBox && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-50">
           <div className="flex flex-col bg-white py-8 px-8 rounded-[20px] shadow-lg w-[600px] text-center justify-center items-center h-[300px]">
@@ -1104,14 +1113,14 @@ export const EnrollAndCredits: React.FC = () => {
         <div
           className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4 shadow-lg border border-gray-200`}
         >
-          <div className="rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
+          <div className="relative rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
             <div className="mt-[58px] ml-4 flex flex-col h-full">
               {/* General Education Section */}
               <div
                 style={{
                   height: `${maxGeneralEducationCourses * heightDiv + 26}px`, // Dynamic height based on the number of courses
                 }}
-                className="bg-yellow-50 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-collection-1-yellow-shade-y7 text-sm"
+                className="bg-yellow-50 border-r-0 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-collection-1-yellow-shade-y7 text-sm"
               >
                 <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                   General Education
@@ -1123,7 +1132,7 @@ export const EnrollAndCredits: React.FC = () => {
                 style={{
                   height: `${maxMajorRequirementCourses * heightDiv + 34}px`, // Dynamic height for major requirements
                 }}
-                className="bg-blue-shadeb05 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-sm"
+                className="bg-blue-shadeb05 border-r-0 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-sm"
               >
                 <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)]  cursor-default">
                   Major Requirements
@@ -1136,11 +1145,11 @@ export const EnrollAndCredits: React.FC = () => {
                   style={{
                     height: `${
                       maxFreeElectiveCourses === 1
-                        ? maxFreeElectiveCourses * heightDiv + 34
-                        : maxFreeElectiveCourses * heightDiv + 32 + 4
+                        ? maxFreeElectiveCourses * heightDiv + 33.5
+                        : maxFreeElectiveCourses * heightDiv + 32 + 2
                     }px`, // Dynamic height based on free electives
                   }}
-                  className="bg-collection-1-black-sl border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-black text-sm"
+                  className="bg-collection-1-black-sl border-r-0 border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-black text-sm"
                 >
                   <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                     {maxFreeElectiveCourses > 1 ? "Free Elective" : "Free"}
@@ -1150,10 +1159,10 @@ export const EnrollAndCredits: React.FC = () => {
 
               {/* Credits Section */}
               <div
-                style={{ height: `${30}px` }}
-                className="bg-blue-shadeb1 border border-solid border-blue-shadeb3 flex items-center justify-center w-[50px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-[12px]"
+                style={{ height: `${30 + 5}px` }}
+                className="bg-blue-shadeb1 border-r-0 border border-solid border-blue-shadeb5 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-center"
               >
-                <p className="cursor-default text-[10px] pr-2 font-bold">
+                <p className="cursor-default text-[10px] pr-2 font-bold text-center ml-2">
                   Credit
                 </p>
               </div>

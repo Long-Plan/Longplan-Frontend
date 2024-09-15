@@ -7,6 +7,7 @@ import RootPage from "modules/root/pages/RootPage";
 import UserPage from "modules/user/pages/UserPage";
 // import DocPage from "modules/home/pages/DocPage";
 import CreatePage from "../modules/CreatePlan/CreatePage.tsx";
+import SettingsPage from "modules/user/pages/SettingsPage.tsx";
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: ClientRouteKey.Create,
     component: withAuth(AuthKey.UserAuth)(CreatePage),
     loading: true,
+  },
+  {
+    path: ClientRouteKey.Settings,
+    component: withAuth(AuthKey.UserAuth)(SettingsPage),
+    loading: false,
   },
   {
     path: ClientRouteKey.OAuth,
