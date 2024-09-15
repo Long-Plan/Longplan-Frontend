@@ -1,5 +1,5 @@
 import useGlobalStore from "common/contexts/StoreContext";
-import "./Navbar.css";
+import "./Navbar.css"; // Make sure your custom styles are in this file
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getLogout } from "common/apis/logout";
@@ -58,46 +58,49 @@ const Navbar: React.FC<NavbarProps> = ({ showExitPopup }) => {
     <nav className="navbar shadow-box-shadow w-[82px] h-[600px]">
       <ul className="navbar-nav">
         <li className="nav-item flex text-center items-center">
-          <a onClick={() => handleNavClick("/home")}>
+          <a onClick={() => handleNavClick("/home")} className="cursor-pointer">
             <img
               src={isHome ? "/imgs/Home_p.svg" : "/imgs/Home.svg"}
-              alt=""
+              alt="Home"
               style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
+              className={`cursor-pointer transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
             />
           </a>
         </li>
 
         <hr className="bg-gray-100 opacity-100 mt-4" />
         <li className="nav-item flex text-center items-center">
-          <a onClick={() => handleNavClick("/create")}>
+          <a
+            onClick={() => handleNavClick("/create")}
+            className="cursor-pointer"
+          >
             <img
               src={isCreate ? "/imgs/Create_p.svg" : "/imgs/Create.svg"}
-              alt=""
+              alt="Create"
               style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
+              className={`cursor-pointer transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
             />
             <p className={`text-[14px] mt-2`}>Plan</p>
           </a>
         </li>
         <li className="nav-item text-center items-center">
-          <a onClick={() => handleNavClick("/user")}>
+          <a onClick={() => handleNavClick("/user")} className="cursor-pointer">
             <img
               src={isProfile ? "/imgs/Profile_p.svg" : "/imgs/Profile.svg"}
-              alt=""
+              alt="Profile"
               style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
+              className={`cursor-pointer transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
             />
             <p className={`text-[14px] mt-2`}>Profile</p>
           </a>
         </li>
-        <li className="nav-bot mb-2 cursor-pointer text-center items-center">
-          <a className="nav-link" onClick={handleLogout}>
+        <li className="nav-bot mb-2 text-center items-center">
+          <a className="nav-link cursor-pointer" onClick={handleLogout}>
             <img
               src="/imgs/Logout.png"
-              alt=""
+              alt="Logout"
               style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
+              className={`cursor-pointer transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
             />
             Log out
           </a>

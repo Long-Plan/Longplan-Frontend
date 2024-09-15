@@ -58,6 +58,7 @@ function LongPlan() {
 
   const [draggedCourse, setDraggedCourse] = useState<any>(null);
   const [showPopup, setShowPopup] = useState(false); // New state for popup
+  const [showInfo, setShowInfo] = useState(false); // State for showing info popup
   const [nextPage, setNextPage] = useState<string | null>(null); // State to store the next page
 
   useEffect(() => {
@@ -221,6 +222,38 @@ function LongPlan() {
         onCancel={handleCancelExit}
         onConfirm={handleConfirmExit}
       />
+
+      {/* Info Button and Popup */}
+      <div className={`flex flex-cols justify-center items-center mt-4`}>
+        <button
+          className={`flex border-[2px] bg-white border-solid border-blue-shadeb5 rounded-[20px] text-sm p-1 w-[20px] h-[20px] 
+            text-center justify-center items-center text-blue-shadeb5 transition-all duration-300 hover:scale-125`}
+          onClick={() => setShowInfo(true)}
+        >
+          ?
+        </button>
+        {showInfo && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-50">
+            <div className="flex flex-col bg-white p-6 rounded-[20px] shadow-lg w-[800px] text-center">
+              <h2 className="text-lg font-bold mb-4">
+                ข้อมูลชนิดกล่องวิชาในแต่ละหมวดหมู่
+              </h2>
+              <div className={`flex flex-col m-4 justify-center items-center`}>
+                <img
+                  src={`/imgs/Subjectbox_Details.svg`}
+                  className={`w-[500px] pb-4 transition duration-300 hover:scale-105`}
+                />
+              </div>
+              <button
+                className="bg-blue-shadeb5 hover:bg-blue-shadeb4 text-white font-bold py-2 px-4 rounded-[20px]"
+                onClick={() => setShowInfo(false)}
+              >
+                ปิด
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Course Boxes */}
       <div className="flex flex-col w-full">
