@@ -8,9 +8,9 @@ export const truncateTitle = (title: string): string => {
   const lastCharNumber = Number(lastChar);
 
   if (isNumber(lastCharNumber) && !isNaN(lastCharNumber)) {
-    return title.length > 9 ? `${title.substring(0, 8)} ${lastChar}` : title; // Handle cases where length is not greater than 9
+    return title.length > 8 ? `${title.substring(0, 7)} ${lastChar}` : title; // Handle cases where length is not greater than 9
   } else {
-    return title.length > 9 ? `${title.substring(0, 8)}..` : title;
+    return title.length > 8 ? `${title.substring(0, 7)}..` : title;
   }
 };
 // Define supporting types for BoxProps

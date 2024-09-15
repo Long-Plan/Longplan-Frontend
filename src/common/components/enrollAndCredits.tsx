@@ -14,8 +14,11 @@ import PendingCreditBox from "./EnrollSubject/PendingCreditBox";
 import { coreApi } from "core/connections";
 import { useQuery } from "react-query";
 import useGlobalStore from "common/contexts/StoreContext";
-import PlanSelection from "./Navbar/PlanSelection.tsx";
+import PlanSelection from "./planselector/PlanSelection.tsx";
 import { toInteger } from "lodash-es";
+import SummaryBox from "./SummaryBox/CreditSummary.tsx";
+import CourseRemainBox from "./SummaryBox/CourseRemainBox.tsx";
+import InfoModal from "./Popup/InfoModal.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -46,6 +49,8 @@ type Course = {
   courseTitleEng: string;
   recommendYear: number;
   recommendSemester: number;
+  prerequisites?: string[];
+  corequisites?: string;
 };
 
 type Plan = {
@@ -71,7 +76,7 @@ function getCurriculum({
 function getEnrolledCourses(): Promise<EnrolledCoursesData> {
   return new Promise<EnrolledCoursesData>((resolve, reject) => {
     coreApi
-      .get(`/student/enrolledData`)
+      .get(`/student/enrolledDataOld`)
       .then((res: { data: EnrolledCoursesData }) => resolve(res.data))
       .catch(reject);
   });
@@ -116,9 +121,6 @@ export const EnrollAndCredits: React.FC = () => {
     },
     enabled: !!userData, // Ensure the query runs only if userData is available
   });
-
-  console.log(curriculumData);
-  console.log(groupedEnrolls);
 
   // Combine useEffects into a single useEffect for managing body overflow and refetching data
   useEffect(() => {
@@ -466,10 +468,10 @@ export const EnrollAndCredits: React.FC = () => {
         group.requiredCourses.forEach(
           (course: {
             courseNo: string;
-            recommendYear: any;
-            recommendSemester: any;
-            courseTitleEng: any;
-            credits: any;
+            recommendYear: number;
+            recommendSemester: number;
+            credits: number;
+            courseTitleEng: string;
           }) => {
             // Check if the course exists in groupedEnrolls
             let courseExists = false;
@@ -507,10 +509,10 @@ export const EnrollAndCredits: React.FC = () => {
         group.requiredCourses.forEach(
           (course: {
             courseNo: string;
-            recommendYear: any;
-            recommendSemester: any;
-            courseTitleEng: any;
-            credits: any;
+            recommendYear: number;
+            recommendSemester: number;
+            credits: number;
+            courseTitleEng: string;
           }) => {
             // Check if the course exists in groupedEnrolls
             let courseExists = false;
@@ -620,35 +622,19 @@ export const EnrollAndCredits: React.FC = () => {
 
   type Group = "generalEducation" | "majorRequirements" | "freeElective";
 
-  function findMaxRemainCoursesByGroup(group: Group) {
-    // Create a map to track the count of courses for each year-semester combination
+  function findMaxRemainCoursesByGroup(group: Group): number {
     const yearSemesterCount: { [key: string]: number } = {};
 
-    // Iterate through the courses in the specified group
     remainCoursesByGroup[group].forEach(
-      (course: { recommendYear: number; recommendSemester: number }) => {
-        const { recommendYear, recommendSemester } = course;
-
+      ({ recommendYear, recommendSemester }) => {
         if (recommendYear && recommendSemester) {
           const key = `${recommendYear}-${recommendSemester}`;
-          // Initialize or increment the count for the current year-semester combination
-          if (!yearSemesterCount[key]) {
-            yearSemesterCount[key] = 0;
-          }
-          yearSemesterCount[key]++;
+          yearSemesterCount[key] = (yearSemesterCount[key] || 0) + 1;
         }
       }
     );
 
-    // Find the maximum count among all year-semester combinations
-    let maxCount = 0;
-    Object.values(yearSemesterCount).forEach((count) => {
-      if (count > maxCount) {
-        maxCount = count;
-      }
-    });
-
-    return maxCount;
+    return Math.max(...Object.values(yearSemesterCount), 0);
   }
 
   if (maxFreeElectiveCourses === 0) maxFreeElectiveCourses = 1;
@@ -672,7 +658,14 @@ export const EnrollAndCredits: React.FC = () => {
           <LearnerEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             courseCredit={Math.floor(course.credit)}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
             remain={true}
           />
         );
@@ -682,6 +675,13 @@ export const EnrollAndCredits: React.FC = () => {
           <CoCreEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
             courseCredit={Math.floor(course.credit)}
             remain={true}
           />
@@ -692,8 +692,15 @@ export const EnrollAndCredits: React.FC = () => {
           <ActEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             courseCredit={Math.floor(course.credit)}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -702,8 +709,15 @@ export const EnrollAndCredits: React.FC = () => {
           <GEElecEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -712,8 +726,15 @@ export const EnrollAndCredits: React.FC = () => {
           <CoreEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -722,8 +743,15 @@ export const EnrollAndCredits: React.FC = () => {
           <MajorEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -732,8 +760,15 @@ export const EnrollAndCredits: React.FC = () => {
           <MajorEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
         break;
@@ -742,8 +777,15 @@ export const EnrollAndCredits: React.FC = () => {
           <FreeEnrollBox
             courseNo={course.courseNo}
             courseTitleEng={truncateTitle(course.courseTitleEng || "")}
+            courseFullName={course.courseTitleEng || ""}
             courseCredit={Math.floor(course.credit)}
+            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+              course.courseNo
+            )}
+            courseCategory={groupName}
             remain={true}
+            coursePrerequisites={findPreReqFromCurriculumData(course.courseNo)}
+            courseCorequisite={findCoReqFromCurriculumData(course.courseNo)}
           />
         );
     }
@@ -755,6 +797,60 @@ export const EnrollAndCredits: React.FC = () => {
         {content}
       </div>
     );
+  }
+
+  function findCourseRecommendYearForCurriculumData(courseNo: string) {
+    if (!curriculumData) return "";
+    for (const group of curriculumData.coreAndMajorGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return (
+            "ปี " + course.recommendYear + " เทอม " + course.recommendSemester
+          );
+        }
+      }
+    }
+    for (const group of curriculumData.geGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return (
+            "ปี " + course.recommendYear + " เทอม " + course.recommendSemester
+          );
+        }
+      }
+    }
+    return "ไม่มีข้อมูล";
+  }
+
+  function findPreReqFromCurriculumData(courseNo: string) {
+    if (!curriculumData) return [];
+    for (const group of curriculumData.coreAndMajorGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return course.prerequisites;
+        }
+      }
+    }
+    for (const group of curriculumData.geGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return course.prerequisites;
+        }
+      }
+    }
+    return [];
+  }
+
+  function findCoReqFromCurriculumData(courseNo: string) {
+    if (!curriculumData) return "";
+    for (const group of curriculumData.coreAndMajorGroups) {
+      for (const course of group.requiredCourses) {
+        if (course.courseNo === courseNo) {
+          return course.corequisite || "";
+        }
+      }
+    }
+    return "";
   }
 
   function calculateRemainingCredits(course: Course[]) {
@@ -846,6 +942,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Learner Person"}
+                courseNo={"000000"}
+                courseFullName={"Learner Person Course"}
+                courseCategory={groupName}
+                courseRecommendedYear="ไม่มีข้อมูล"
               />
             </div>
           );
@@ -858,6 +958,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Co-Creator"}
+                courseNo={"000000"}
+                courseFullName={"Co-Creator Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -870,6 +974,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Active Citizen"}
+                courseNo={"000000"}
+                courseFullName={"Active Citizen Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -881,7 +989,11 @@ export const EnrollAndCredits: React.FC = () => {
                 courseCredit={boxCredit}
                 remain={true}
                 dummy={true}
-                courseTitleEng={"GE Elective"}
+                courseNo={"000000"}
+                courseTitleEng={"General Elective"}
+                courseFullName={"General Elective Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -894,6 +1006,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Core"}
+                courseNo={"000000"}
+                courseFullName={"Core Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -906,6 +1022,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Major Required"}
+                courseNo={"000000"}
+                courseFullName={"Major Required Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -918,6 +1038,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Major Elective"}
+                courseNo={"000000"}
+                courseFullName={"Major Elective Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -930,6 +1054,10 @@ export const EnrollAndCredits: React.FC = () => {
                 remain={true}
                 dummy={true}
                 courseTitleEng={"Free Elective"}
+                courseNo={"000000"}
+                courseFullName={"Free Elective Course"}
+                courseCategory={groupName}
+                courseRecommendedYear={"ไม่มีข้อมูล"}
               />
             </div>
           );
@@ -966,34 +1094,43 @@ export const EnrollAndCredits: React.FC = () => {
           </div>
         </div>
       )}
-      {!showInfoBox && <PlanSelection onPlanChange={setSelectedPlan} />}
+      {!showInfoBox && (
+        <div>
+          <PlanSelection onPlanChange={setSelectedPlan} />
+        </div>
+      )}
       <div className="pb-10"></div>
-      <div className="flex">
+      <div className="flex flex-row items-start space-x-4">
         <div
-          className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4`}
+          className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4 shadow-lg border border-gray-200`}
         >
           <div className="rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
-            <div className="mt-[74px] ml-4 flex-row">
+            <div className="mt-[58px] ml-4 flex flex-col h-full">
+              {/* General Education Section */}
               <div
                 style={{
-                  height: `${maxGeneralEducationCourses * heightDiv + 26}px`,
+                  height: `${maxGeneralEducationCourses * heightDiv + 26}px`, // Dynamic height based on the number of courses
                 }}
-                className="bg-yellow-50 border border-solid border-amber-300 flex items-center pr-4 py-4 justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-collection-1-yellow-shade-y7 text-sm "
+                className="bg-yellow-50 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-collection-1-yellow-shade-y7 text-sm"
               >
-                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] pr-4 cursor-default">
+                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                   General Education
                 </p>
               </div>
+
+              {/* Major Requirements Section */}
               <div
                 style={{
-                  height: `${maxMajorRequirementCourses * heightDiv + 34}px`,
+                  height: `${maxMajorRequirementCourses * heightDiv + 34}px`, // Dynamic height for major requirements
                 }}
-                className="bg-blue-shadeb05 border border-solid border-blue-shadeb3 flex items-center pr-4 py-4 justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-sm"
+                className="bg-blue-shadeb05 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-sm"
               >
-                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] pr-4 cursor-default">
+                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)]  cursor-default">
                   Major Requirements
                 </p>
               </div>
+
+              {/* Free Electives Section */}
               {maxFreeElectiveCourses > 0 && (
                 <div
                   style={{
@@ -1001,24 +1138,28 @@ export const EnrollAndCredits: React.FC = () => {
                       maxFreeElectiveCourses === 1
                         ? maxFreeElectiveCourses * heightDiv + 34
                         : maxFreeElectiveCourses * heightDiv + 32 + 4
-                    }px`,
+                    }px`, // Dynamic height based on free electives
                   }}
-                  className="bg-collection-1-black-sl border border-solid border-collection-1-black-shade-bl4 flex items-center pr-4 py-4 justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-black text-sm"
+                  className="bg-collection-1-black-sl border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-black text-sm"
                 >
-                  <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] pr-4 cursor-default">
+                  <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                     {maxFreeElectiveCourses > 1 ? "Free Elective" : "Free"}
                   </p>
                 </div>
               )}
+
+              {/* Credits Section */}
               <div
                 style={{ height: `${30}px` }}
-                className={`bg-blue-shadeb1 border border-solid border-blue-shadeb3 flex items-center pr-2 justify-center w-[50px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-[12px]`}
+                className="bg-blue-shadeb1 border border-solid border-blue-shadeb3 flex items-center justify-center w-[50px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-[12px]"
               >
-                <p className={`cursor-default text-[10px] font-bold`}>Credit</p>
+                <p className="cursor-default text-[10px] pr-2 font-bold">
+                  Credit
+                </p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-[20px] w-[1000px] pb-12">
+          <div className="bg-white rounded-[20px] w-full pb-12 cursor-default">
             <div className="flex justify-end pb-2 m-2 top-0 right-0 h-[30px]">
               <div className={`flex flex-cols justify-center items-center`}>
                 <div className="flex border-[2px] border-solid border-blue-shadeb5 w-[30px] h-[10px] rounded-[20px] bg-blue-shadeb1 mr-2" />
@@ -1041,27 +1182,12 @@ export const EnrollAndCredits: React.FC = () => {
                   ?
                 </button>
                 {showInfo && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-50">
-                    <div className="flex flex-col bg-white p-6 rounded-[20px] shadow-lg w-[800px] text-center">
-                      <h2 className="text-lg font-bold mb-4">
-                        ข้อมูลชนิดกล่องวิชาในแต่ละหมวดหมู่
-                      </h2>
-                      <div
-                        className={`flex flex-col m-4 justify-center items-center`}
-                      >
-                        <img
-                          src={`/imgs/Subjectbox_Details.svg`}
-                          className={`w-[500px] pb-4 transition duration-300 hover:scale-105`}
-                        />
-                      </div>
-                      <button
-                        className="bg-blue-shadeb5 hover:bg-blue-shadeb4 text-white font-bold py-2 px-4 rounded-[20px]"
-                        onClick={() => setShowInfo(false)}
-                      >
-                        ปิด
-                      </button>
-                    </div>
-                  </div>
+                  <InfoModal
+                    title="ข้อมูลชนิดกล่องวิชาในแต่ละหมวดหมู่"
+                    imageUrl="/imgs/Subjectbox_Details.svg"
+                    imageAlt="Subject Box Details"
+                    onClose={() => setShowInfo(false)}
+                  />
                 )}
               </div>
             </div>
@@ -1149,6 +1275,7 @@ export const EnrollAndCredits: React.FC = () => {
                                 totalCredits += Math.floor(
                                   toInteger(course.credit)
                                 );
+
                                 switch (groupName) {
                                   case "Learner Person":
                                   case "Co-Creator":
@@ -1189,6 +1316,17 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1201,6 +1339,17 @@ export const EnrollAndCredits: React.FC = () => {
                                           )}
                                           courseCredit={Math.floor(
                                             course.credit
+                                          )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
                                           )}
                                         />
                                       );
@@ -1215,6 +1364,17 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1227,6 +1387,17 @@ export const EnrollAndCredits: React.FC = () => {
                                           )}
                                           courseCredit={Math.floor(
                                             course.credit
+                                          )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
                                           )}
                                         />
                                       );
@@ -1241,6 +1412,17 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1253,6 +1435,17 @@ export const EnrollAndCredits: React.FC = () => {
                                           )}
                                           courseCredit={Math.floor(
                                             course.credit
+                                          )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
                                           )}
                                         />
                                       );
@@ -1267,6 +1460,17 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                       break;
@@ -1278,6 +1482,17 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.credit
                                           )}
                                           courseTitleEng={""}
+                                          courseFullName={courseTitleEng || ""}
+                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCategory={groupName}
+                                          coursePrerequisites={findPreReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
+                                          courseCorequisite={findCoReqFromCurriculumData(
+                                            course.courseNo
+                                          )}
                                         />
                                       );
                                   }
@@ -1301,17 +1516,23 @@ export const EnrollAndCredits: React.FC = () => {
                                           courseTitleEng || ""
                                         )}
                                         courseCredit={Math.floor(course.credit)}
+                                        courseFullName={
+                                          courseTitleEng || "Not found"
+                                        }
+                                        courseCategory={
+                                          groupName || "Not found"
+                                        }
+                                        courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                          course.courseNo
+                                        )}
                                       />
                                     </div>
                                   );
                                 }
                               };
 
-                              const renderPlaceholder = (key: string) => (
-                                <div
-                                  key={key}
-                                  className="flex flex-col items-center justify-center my-1.5"
-                                >
+                              const renderPlaceholder = () => (
+                                <div className="flex flex-col items-center justify-center my-1.5">
                                   <BlankBox
                                     courseNo={""}
                                     courseTitleEng={""}
@@ -1353,11 +1574,7 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.recommendSemester?.toString() ===
                                               semester
                                         ).length,
-                                    }).map((_, index) =>
-                                      renderPlaceholder(
-                                        `gen-placeholder-${index}`
-                                      )
-                                    )}
+                                    }).map(() => renderPlaceholder())}
                                   </div>
 
                                   <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
@@ -1387,11 +1604,7 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.recommendSemester?.toString() ===
                                               semester
                                         ).length,
-                                    }).map((_, index) =>
-                                      renderPlaceholder(
-                                        `major-placeholder-${index}`
-                                      )
-                                    )}
+                                    }).map(() => renderPlaceholder())}
                                   </div>
                                   <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
                                   {/* Line between groups */}
@@ -1419,11 +1632,7 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.recommendSemester?.toString() ===
                                               semester
                                         ).length,
-                                    }).map((_, index) =>
-                                      renderPlaceholder(
-                                        `free-placeholder-${index}`
-                                      )
-                                    )}
+                                    }).map(() => renderPlaceholder())}
                                   </div>
                                   <div className="flex flex-col items-center justify-center mt-4 w-full bg-blue-shadeb05 pt-1.5 pb-1.5">
                                     {totalCredits > 0 ? (
@@ -1452,408 +1661,43 @@ export const EnrollAndCredits: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="static top-50 w-70 p-4 bg-white   rounded-[20px]">
-          {/* Display the requiredCredits and sum of credits for each groupName */}
-          <div className="mt-4">
-            <h3 className="text-center my-4">หน่วยกิตสะสม</h3>
 
-            {/* GE */}
-            <div className="w-auto h-12 p-1 bg-yellow-50 rounded-tl-2xl rounded-tr-2xl border border-solid border-amber-300 flex  items-center gap-8">
-              <p className="flex flex-col col-span-1 justify-center items-center ">
-                <span className="text-collection-1-yellow-shade-y7 text-sm ">
-                  {groupCredits["Learner Person"] +
-                    groupCredits["Co-Creator"] +
-                    groupCredits["Active Citizen"] +
-                    groupCredits["Elective"] >=
-                    totalGeCredits && (
-                    <span
-                      role="img"
-                      aria-label="check"
-                      className="inline-block mr-2"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: "var(--collection-1-yellow-shade-y2)",
-                        textAlign: "center",
-                        lineHeight: "20px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  หมวดศึกษาทั่วไป
-                </span>
-                <span className="text-collection-1-yellow-shade-y7 text-xs font-medium">
-                  (General Education)
-                </span>
-              </p>
-              <div className=" px-5 bg-white rounded-lg border border-solid border-collection-1-yellow-shade-y6 justify-center items-center gap-2.5 inline-flex">
-                <div className="text-center text-collection-1-yellow-shade-y6 text-sm font-bold">
-                  {`${
-                    groupCredits["Learner Person"] +
-                    groupCredits["Co-Creator"] +
-                    groupCredits["Active Citizen"] +
-                    groupCredits["Elective"]
-                  } / ${totalGeCredits}`}
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-bl-2xl rounded-br-2xl bg-white px-4 py-1 border border-solid border-amber-300 mb-4 ">
-              {[
-                ...curriculumData.geGroups,
-                // ...curriculumData.coreAndMajorGroups,
-              ].map(
-                (
-                  group: { groupName: any; requiredCredits: any },
-                  index: React.Key | null | undefined
-                ) => (
-                  <p
-                    className={`my-3 flex text-[14px] text-${getColorForGroupName(
-                      group.groupName
-                    )} `}
-                  >
-                    <li key={index}>
-                      {" "}
-                      {`${group.groupName} :
-                      
-						  ${groupCredits[group.groupName] || "0"} / ${group.requiredCredits}`}
-                      {groupCredits[group.groupName] ===
-                        group.requiredCredits && (
-                        <span
-                          role="img"
-                          aria-label="check"
-                          className="ml-2"
-                          style={{
-                            display: "inline-block",
-                            width: "20px",
-                            height: "20px",
-                            borderRadius: "50%",
-                            backgroundColor:
-                              "var(--collection-1-yellow-shade-y2)",
-                            textAlign: "center",
-                            lineHeight: "20px",
-                          }}
-                        >
-                          ✓
-                        </span>
-                      )}
-                    </li>{" "}
-                  </p>
-                )
-              )}
-            </div>
-
-            {/* Major */}
-            <div className="w-auto h-12 p-1 bg-collection-1-b-sl rounded-tl-2xl rounded-tr-2xl border border-solid border-blue-shadeb4 flex  items-center gap-4">
-              <p className="flex flex-col col-span-1 justify-center items-center ">
-                <span className="text-blue-shadeb5 text-sm ">
-                  {totalCoreAndMajorEarnedCredits >=
-                    totalCoreAndMajorRequiredCredits && (
-                    <span
-                      role="img"
-                      aria-label="check"
-                      className="inline-block mr-2"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: "#B0B8FF",
-                        textAlign: "center",
-                        lineHeight: "20px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  หมวดวิชาเฉพาะ
-                </span>
-                <span className="text-blue-shadeb5 text-xs font-medium">
-                  (Major Requirements)
-                </span>
-              </p>
-              <div className=" px-5 bg-white rounded-lg border border-solid border-blue-shadeb4 justify-center items-center gap-2.5 inline-flex">
-                <div className="text-center text-blue-shadeb5 text-sm font-bold">
-                  {`${totalCoreAndMajorEarnedCredits} / ${totalCoreAndMajorRequiredCredits}`}
-                </div>
-              </div>
-            </div>
-            <div className="rounded-bl-2xl rounded-br-2xl bg-white px-4 py-1 border border-solid border-blue-shadeb4 text-collection-1-yellow-shade-y7 mb-4">
-              {[
-                // ...curriculumData.geGroups,
-                ...curriculumData.coreAndMajorGroups,
-              ].map(
-                (
-                  group: { groupName: any; requiredCredits: any },
-                  index: React.Key | null | undefined
-                ) => (
-                  <p
-                    className={`my-3 text-[14px] text-${getColorForGroupName(
-                      group.groupName
-                    )} `}
-                  >
-                    <li key={index}>
-                      {" "}
-                      {`${group.groupName} : 
-						  ${groupCredits[group.groupName] || "0"} / ${group.requiredCredits}`}
-                      {groupCredits[group.groupName] >=
-                        group.requiredCredits && (
-                        <span
-                          role="img"
-                          aria-label="check"
-                          className="ml-2"
-                          style={{
-                            display: "inline-block",
-                            width: "20px",
-                            height: "20px",
-                            borderRadius: "50%",
-                            backgroundColor:
-                              "var(--collection-1-yellow-shade-y2)",
-                            textAlign: "center",
-                            lineHeight: "20px",
-                          }}
-                        >
-                          ✓
-                        </span>
-                      )}
-                    </li>{" "}
-                  </p>
-                )
-              )}
-            </div>
-
-            {/* FreeElec */}
-            <div className="w-auto h-12 p-1 bg-neutral-100 rounded-2xl border border-solid border-neutral-400 flex  items-center gap-8">
-              <p className="flex flex-col col-span-1 justify-center items-center">
-                <span className="text-neutral-600 text-sm">
-                  {groupCredits["Free Elective"] >=
-                    curriculumData.freeElectiveCredits && (
-                    <span
-                      role="img"
-                      aria-label="check"
-                      className="inline-block mr-2"
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        backgroundColor: "#C3C3C3",
-                        textAlign: "center",
-                        lineHeight: "20px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  หมวดวิชาเลือกเสรี
-                </span>
-                <span className="text-neutral-600 text-xs font-medium">
-                  (Free Electives)
-                </span>
-              </p>
-              <div className=" px-5 bg-white rounded-lg border border-solid border-neutral-600 flex justify-center items-center">
-                <div className="text-center text-neutral-600 text-sm font-bold ">
-                  {`${groupCredits["Free Elective"] || "0"} / ${
-                    curriculumData.freeElectiveCredits
-                  }`}
-                </div>
-              </div>
-            </div>
+        <div className="bg-white p-6 rounded-[20px] shadow-lg border border-gray-200">
+          <div className="mb-6">
+            <SummaryBox
+              groupCredits={groupCredits}
+              totalCredits={totalCredits}
+              totalGeCredits={totalGeCredits}
+              totalCoreAndMajorEarnedCredits={totalCoreAndMajorEarnedCredits}
+              totalCoreAndMajorRequiredCredits={
+                totalCoreAndMajorRequiredCredits
+              }
+              curriculumData={curriculumData}
+            />
           </div>
-          {/* Display the total sum of credits */}
-          <div className="mt-5">
-            <h3 className="text-center">หน่วยกิตรวม</h3>
-            <p className="text-center text-collection-1-black-shade-bl2 m-2 text-sm">{`คุณเรียนไปแล้ว ${totalCredits} จาก ${
-              curriculumData.requiredCredits || " "
-            } หน่วยกิต`}</p>
-            {/* Progress Bar */}
-            <div className="relative pt-3">
-              <div className="flex mb-2 items-center justify-between">
-                <div>
-                  <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-shadeb3 bg-blue-shadeb05">
-                    หน่วยกิตสะสม
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-semibold inline-block text-blue-shadeb3 ">
-                    {`${Math.min(
-                      totalCredits,
-                      curriculumData.requiredCredits
-                    )} / ${curriculumData.requiredCredits}`}
-                  </span>
-                </div>
-              </div>
-              <div className="h-4 relative w-full rounded-full overflow-hidden bg-blue-shadeb05 border border-solid border-1 border-blue-shadeb5">
-                <div
-                  className="h-full rounded-full bg-blue-shadeb3"
-                  style={{
-                    width: `${Math.min(
-                      (totalCredits / curriculumData.requiredCredits) * 100,
-                      100
-                    )}%`,
-                  }}
-                ></div>
-              </div>
-            </div>
+
+          <div>
+            <CourseRemainBox
+              remainLearner={remainLearner}
+              remainCocre={remainCocre}
+              remainAct={remainAct}
+              remainElec={remainElec}
+              remainCore={remainCore}
+              remainMJreq={remainMJreq}
+              remainMJelec={remainMJelec}
+              remainFRtotal={remainFRtotal}
+              remainGEtotal={remainGEtotal}
+              remainMJtotal={remainMJtotal}
+              renderRemainTotalBox={function (
+                remainValue: number,
+                groupName: string
+              ): JSX.Element {
+                return <>{renderRemainTotalBox(remainValue, groupName)}</>;
+              }}
+            />
           </div>
         </div>
-
-        {(remainLearner > 0 ||
-          remainCocre > 0 ||
-          remainAct > 0 ||
-          remainElec > 0 ||
-          remainCore > 0 ||
-          remainMJreq > 0 ||
-          remainMJelec > 0 ||
-          remainFRtotal > 0) && (
-          <div className="ml-4 flex flex-col bg-white rounded-[20px] p-4">
-            <h2 className="flex m-2 mb-5 bg-gray-100 p-2 rounded-[20px] text-[14px]">
-              หน่วยกิตคงเหลือ
-            </h2>
-            <p className={`mb-4 text-center text-[12px] text-gray-500`}>
-              วิชาที่ยังไม่ได้เรียน
-            </p>
-            <div className="grid grid-rows-auto justify-center items-center">
-              {remainGEtotal > 0 &&
-                remainLearner + remainCocre + remainAct + remainElec > 0 && (
-                  <div
-                    className={`flex flex-col bg-yellow-50 p-2 rounded-[20px] border border-solid border-amber-300 mb-4 items-center`}
-                  >
-                    <p
-                      className={`text-collection-1-yellow-shade-y7 text-xs font-medium`}
-                    >
-                      General Education
-                    </p>
-                    {remainLearner > 0 && (
-                      <>
-                        {renderRemainTotalBox(remainLearner, "Learner Person")}
-                      </>
-                    )}
-                    {remainCocre > 0 && (
-                      <>{renderRemainTotalBox(remainCocre, "Co-Creator")}</>
-                    )}
-                    {remainAct > 0 && (
-                      <>{renderRemainTotalBox(remainAct, "Active Citizen")}</>
-                    )}
-                    {remainElec > 0 && (
-                      <>{renderRemainTotalBox(remainElec, "Elective")}</>
-                    )}
-                  </div>
-                )}
-              {remainMJtotal > 0 &&
-                remainCore + remainMJreq + remainMJelec > 0 && (
-                  <div
-                    className={`flex flex-col bg-blue-shadeb05 p-2 rounded-[20px] border border-solid border-blue-shadeb4 items-center mb-4`}
-                  >
-                    <p className={`text-blue-shadeb5 text-xs font-medium`}>
-                      Major Requirements
-                    </p>
-                    {remainCore > 0 && (
-                      <>{renderRemainTotalBox(remainCore, "Core")}</>
-                    )}
-                    {remainMJreq > 0 && (
-                      <>{renderRemainTotalBox(remainMJreq, "Major Required")}</>
-                    )}
-                    {remainMJelec > 0 && (
-                      <>
-                        {renderRemainTotalBox(remainMJelec, "Major Elective")}
-                      </>
-                    )}
-                  </div>
-                )}
-              {remainFRtotal > 0 && (
-                <div
-                  className={`flex flex-col bg-neutral-100 p-2 rounded-[20px] border border-solid border-neutral-400 items-center mb-4`}
-                >
-                  <p className={`text-neutral-600 text-xs font-medium`}>
-                    Free Elective
-                  </p>
-                  {renderRemainTotalBox(remainFRtotal, "Free Elective")}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
-      {/*<div className="my-10 bg-white bg-[url('/imgs/creditBG.svg')] rounded-2xl p-10 pt-4 pb-14 bg-cover bg-bottom">*/}
-      {/*  <div className="text-center">*/}
-      {/*    <div className="mb-6 flex items-center justify-center">*/}
-      {/*      <img src="/imgs/icon_book.png" alt="" className="w-[55px] mr-3"/>*/}
-      {/*      <h1 className="pt-5">จำนวนหน่วยกิตที่คงเหลือในแต่ละหมวดหมู่</h1>*/}
-      {/*    </div>*/}
-
-      {/*    <div className="grid md:grid-cols-3 gap-12">*/}
-      {/*      <div>*/}
-      {/*      <span className="font-bold text-blue-shadeb5">*/}
-      {/*        หมวดวิชาเฉพาะ (Major Requirements)*/}
-      {/*      </span>*/}
-
-      {/*        {remainingSubjectsForMajor.map(*/}
-      {/*            (*/}
-      {/*                subject: {*/}
-      {/*                  color: any;*/}
-      {/*                  name: string;*/}
-      {/*                  remaining: number;*/}
-      {/*                  subjectRemaining: number;*/}
-      {/*                },*/}
-      {/*                index: React.Key | null | undefined*/}
-      {/*            ) => (*/}
-      {/*                <li*/}
-      {/*                    key={index}*/}
-      {/*                    className={`my-2 font-normal text-${subject.color} text-left`}*/}
-      {/*                >*/}
-      {/*                  {subject.name} :{" "}*/}
-      {/*                  {subject.remaining > 0*/}
-      {/*                      ? subject.remaining + " " + "หน่วยกิต"*/}
-      {/*                      : "✓"}*/}
-      {/*                  (~*/}
-      {/*                  {subject.subjectRemaining} วิชา)*/}
-      {/*                </li>*/}
-      {/*            )*/}
-      {/*        )}*/}
-      {/*      </div>*/}
-      {/*      <div>*/}
-      {/*      <span className="font-bold text-collection-1-yellow-shade-y7">*/}
-      {/*        หมวดศึกษาทั่วไป (General Education)*/}
-      {/*      </span>*/}
-      {/*        {remainingSubjectsForGE.map(*/}
-      {/*            (*/}
-      {/*                subject: {*/}
-      {/*                  color: any;*/}
-      {/*                  name: string;*/}
-      {/*                  remaining: any;*/}
-      {/*                },*/}
-      {/*                index: React.Key | null | undefined*/}
-      {/*            ) => (*/}
-      {/*                <li*/}
-      {/*                    key={index}*/}
-      {/*                    className={`my-2 font-normal text-${subject.color} text-left`}*/}
-      {/*                >*/}
-      {/*                  {subject.name} :{" "}*/}
-      {/*                  {subject.remaining > 0*/}
-      {/*                      ? subject.remaining + " " + "หน่วยกิต"*/}
-      {/*                      : "✓"}*/}
-      {/*                </li>*/}
-      {/*            )*/}
-      {/*        )}*/}
-      {/*      </div>*/}
-      {/*      /!* Free Elective *!/*/}
-      {/*      <div>*/}
-      {/*      <span className="font-bold text-gray-500">*/}
-      {/*        {" "}*/}
-      {/*        /!* Adjust the color as needed *!/*/}
-      {/*        หมวดวิชาเลือกเสรี (Free Elective)*/}
-      {/*      </span>*/}
-      {/*        <li className={`mt-2 font-normal text-neutral-600 text-left`}>*/}
-      {/*          {remainingFreeElectives.name} :{" "}*/}
-      {/*          {remainingFreeElectives.remaining > 0*/}
-      {/*              ? remainingFreeElectives.remaining + " " + "หน่วยกิต"*/}
-      {/*              : "✓"}*/}
-      {/*        </li>*/}
-      {/*      </div>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
     </div>
   );
 };

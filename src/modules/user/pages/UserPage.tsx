@@ -5,7 +5,6 @@ import { coreApi } from "../../../core/connections.ts";
 import { useQuery } from "react-query";
 import { Course } from "utils/BoxUtils";
 import { toNumber } from "lodash-es";
-import PlanSelection from "common/components/Navbar/PlanSelection.tsx";
 import { Nullable } from "tsdef";
 
 type EnrolledCoursesData = {
@@ -71,7 +70,7 @@ interface EnrollCourseProps {
 const EnrollCourse = ({ selectedYearSemester }: EnrollCourseProps) => {
   const getEnrolledCourses = (): Promise<EnrolledCoursesData> => {
     return coreApi
-      .get(`/student/enrolledData`)
+      .get(`/student/enrolledDataOld`)
       .then((res: { data: EnrolledCoursesData }) => res.data)
       .catch((error) => {
         console.error("Error fetching enrolled courses:", error);
@@ -100,6 +99,7 @@ const EnrollCourse = ({ selectedYearSemester }: EnrollCourseProps) => {
     // Add other properties if necessary
   }
 
+  // Function to find courseTitleEng based on courseNo
   const findCourseTitle = (
     courseNo: string
   ): { courseTitleEng: string | undefined; groupName: string } => {
@@ -116,23 +116,20 @@ const EnrollCourse = ({ selectedYearSemester }: EnrollCourseProps) => {
               courseTitleEng: course.courseTitleEng,
               groupName: group.groupName,
             };
-          } else {
-            for (const electiveCourse of group.electiveCourses) {
-              if (electiveCourse.courseNo === courseNo) {
-                return {
-                  courseTitleEng: electiveCourse.courseTitleEng,
-                  groupName: group.groupName,
-                };
-              }
-            }
+          }
+        }
+        for (const electiveCourse of group.electiveCourses) {
+          if (electiveCourse.courseNo === courseNo) {
+            return {
+              courseTitleEng: electiveCourse.courseTitleEng,
+              groupName: group.groupName,
+            };
           }
         }
       }
     }
-    return {
-      courseTitleEng: undefined,
-      groupName: "Free Elective",
-    };
+
+    return { courseTitleEng: undefined, groupName: "Free Elective" };
   };
 
   const { userData } = useGlobalStore();
@@ -418,12 +415,6 @@ const EnrollCourse = ({ selectedYearSemester }: EnrollCourseProps) => {
 const EnrollData = ({}: {}) => {
   const { userData } = useGlobalStore();
   const [groupedEnrolls, setGroupedEnrolls] = useState<any>(null);
-  const [selectedPlan, setSelectedPlan] = useState({
-    name: "Select your study plan",
-    major: "ISNE",
-    year: "2565",
-    plan: "normal",
-  });
 
   const { refetch } = useQuery("curriculum", {
     onSuccess: async (data: { enrollData: any; curriculumData: any }) => {
@@ -437,7 +428,7 @@ const EnrollData = ({}: {}) => {
     if (userData) {
       refetch();
     }
-  }, [userData, selectedPlan]);
+  }, [userData]);
 
   const [selectedYearSemester, setSelectedYearSemester] =
     useState<string>("1-1"); // State variable for selected year and semester
@@ -450,9 +441,6 @@ const EnrollData = ({}: {}) => {
   return (
     <div className="rounded-[20px] bg-white pt-4">
       <h4 className="text-center pt-4 pb-2">ข้อมูลการลงทะเบียนเรียน</h4>
-      <div className="justify-start flex mb-12">
-        <PlanSelection onPlanChange={setSelectedPlan} />
-      </div>
 
       <div className="flex justify-center pt-4">
         <div className="grid grid-cols-1 items-center justify-center w-auto h-[20px] mr-8">
