@@ -214,7 +214,7 @@ const SummaryBox = ({
   curriculumData: any; // You can define proper types if needed
 }) => {
   return (
-    <div className="static top-50 w-70 p-4 bg-white rounded-[20px]">
+    <div className="static top-50 w-70 p-4 bg-white rounded-[20px] cursor-default">
       <div className="mt-4">
         <h3 className="text-center my-4">หน่วยกิตสะสม</h3>
 

@@ -18,6 +18,7 @@ import PlanSelection from "./PlanSelector/PlanSelection.tsx";
 import { toInteger } from "lodash-es";
 import SummaryBox from "./SummaryBox/CreditSummary.tsx";
 import CourseRemainBox from "./SummaryBox/CourseRemainBox.tsx";
+import InfoModal from "./Popup/InfoModal.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -621,35 +622,19 @@ export const EnrollAndCredits: React.FC = () => {
 
   type Group = "generalEducation" | "majorRequirements" | "freeElective";
 
-  function findMaxRemainCoursesByGroup(group: Group) {
-    // Create a map to track the count of courses for each year-semester combination
+  function findMaxRemainCoursesByGroup(group: Group): number {
     const yearSemesterCount: { [key: string]: number } = {};
 
-    // Iterate through the courses in the specified group
     remainCoursesByGroup[group].forEach(
-      (course: { recommendYear: number; recommendSemester: number }) => {
-        const { recommendYear, recommendSemester } = course;
-
+      ({ recommendYear, recommendSemester }) => {
         if (recommendYear && recommendSemester) {
           const key = `${recommendYear}-${recommendSemester}`;
-          // Initialize or increment the count for the current year-semester combination
-          if (!yearSemesterCount[key]) {
-            yearSemesterCount[key] = 0;
-          }
-          yearSemesterCount[key]++;
+          yearSemesterCount[key] = (yearSemesterCount[key] || 0) + 1;
         }
       }
     );
 
-    // Find the maximum count among all year-semester combinations
-    let maxCount = 0;
-    Object.values(yearSemesterCount).forEach((count) => {
-      if (count > maxCount) {
-        maxCount = count;
-      }
-    });
-
-    return maxCount;
+    return Math.max(...Object.values(yearSemesterCount), 0);
   }
 
   if (maxFreeElectiveCourses === 0) maxFreeElectiveCourses = 1;
@@ -1120,27 +1105,32 @@ export const EnrollAndCredits: React.FC = () => {
           className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4 shadow-lg border border-gray-200`}
         >
           <div className="rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
-            <div className="mt-[56px] ml-4 flex-row">
+            <div className="mt-[58px] ml-4 flex flex-col h-full">
+              {/* General Education Section */}
               <div
                 style={{
-                  height: `${maxGeneralEducationCourses * heightDiv + 26}px`,
+                  height: `${maxGeneralEducationCourses * heightDiv + 26}px`, // Dynamic height based on the number of courses
                 }}
-                className="bg-yellow-50 border border-solid border-amber-300 flex items-center pr-4 py-4 justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-collection-1-yellow-shade-y7 text-sm "
+                className="bg-yellow-50 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-collection-1-yellow-shade-y7 text-sm"
               >
-                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] pr-4 cursor-default">
+                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                   General Education
                 </p>
               </div>
+
+              {/* Major Requirements Section */}
               <div
                 style={{
-                  height: `${maxMajorRequirementCourses * heightDiv + 34}px`,
+                  height: `${maxMajorRequirementCourses * heightDiv + 34}px`, // Dynamic height for major requirements
                 }}
-                className="bg-blue-shadeb05 border border-solid border-blue-shadeb3 flex items-center pr-4 py-4 justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-sm"
+                className="bg-blue-shadeb05 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-sm"
               >
-                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] pr-4 cursor-default">
+                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)]  cursor-default">
                   Major Requirements
                 </p>
               </div>
+
+              {/* Free Electives Section */}
               {maxFreeElectiveCourses > 0 && (
                 <div
                   style={{
@@ -1148,24 +1138,28 @@ export const EnrollAndCredits: React.FC = () => {
                       maxFreeElectiveCourses === 1
                         ? maxFreeElectiveCourses * heightDiv + 34
                         : maxFreeElectiveCourses * heightDiv + 32 + 4
-                    }px`,
+                    }px`, // Dynamic height based on free electives
                   }}
-                  className="bg-collection-1-black-sl border border-solid border-collection-1-black-shade-bl4 flex items-center pr-4 py-4 justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-black text-sm"
+                  className="bg-collection-1-black-sl border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-2xl rounded-bl-2xl text-black text-sm"
                 >
-                  <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] pr-4 cursor-default">
+                  <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                     {maxFreeElectiveCourses > 1 ? "Free Elective" : "Free"}
                   </p>
                 </div>
               )}
+
+              {/* Credits Section */}
               <div
                 style={{ height: `${30}px` }}
-                className={`bg-blue-shadeb1 border border-solid border-blue-shadeb3 flex items-center pr-2 justify-center w-[50px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-[12px]`}
+                className="bg-blue-shadeb1 border border-solid border-blue-shadeb3 flex items-center justify-center w-[50px] rounded-tl-2xl rounded-bl-2xl text-blue-shadeb5 text-[12px]"
               >
-                <p className={`cursor-default text-[10px] font-bold`}>Credit</p>
+                <p className="cursor-default text-[10px] pr-2 font-bold">
+                  Credit
+                </p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-[20px] w-[1000px] pb-12">
+          <div className="bg-white rounded-[20px] w-full pb-12 cursor-default">
             <div className="flex justify-end pb-2 m-2 top-0 right-0 h-[30px]">
               <div className={`flex flex-cols justify-center items-center`}>
                 <div className="flex border-[2px] border-solid border-blue-shadeb5 w-[30px] h-[10px] rounded-[20px] bg-blue-shadeb1 mr-2" />
@@ -1188,27 +1182,12 @@ export const EnrollAndCredits: React.FC = () => {
                   ?
                 </button>
                 {showInfo && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50 z-50">
-                    <div className="flex flex-col bg-white p-6 rounded-[20px] shadow-lg w-[800px] text-center">
-                      <h2 className="text-lg font-bold mb-4">
-                        ข้อมูลชนิดกล่องวิชาในแต่ละหมวดหมู่
-                      </h2>
-                      <div
-                        className={`flex flex-col m-4 justify-center items-center`}
-                      >
-                        <img
-                          src={`/imgs/Subjectbox_Details.svg`}
-                          className={`w-[500px] pb-4 transition duration-300 hover:scale-105`}
-                        />
-                      </div>
-                      <button
-                        className="bg-blue-shadeb5 hover:bg-blue-shadeb4 text-white font-bold py-2 px-4 rounded-[20px]"
-                        onClick={() => setShowInfo(false)}
-                      >
-                        ปิด
-                      </button>
-                    </div>
-                  </div>
+                  <InfoModal
+                    title="ข้อมูลชนิดกล่องวิชาในแต่ละหมวดหมู่"
+                    imageUrl="/imgs/Subjectbox_Details.svg"
+                    imageAlt="Subject Box Details"
+                    onClose={() => setShowInfo(false)}
+                  />
                 )}
               </div>
             </div>
@@ -1552,11 +1531,8 @@ export const EnrollAndCredits: React.FC = () => {
                                 }
                               };
 
-                              const renderPlaceholder = (key: string) => (
-                                <div
-                                  key={key}
-                                  className="flex flex-col items-center justify-center my-1.5"
-                                >
+                              const renderPlaceholder = () => (
+                                <div className="flex flex-col items-center justify-center my-1.5">
                                   <BlankBox
                                     courseNo={""}
                                     courseTitleEng={""}
@@ -1598,11 +1574,7 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.recommendSemester?.toString() ===
                                               semester
                                         ).length,
-                                    }).map((_, index) =>
-                                      renderPlaceholder(
-                                        `gen-placeholder-${index}`
-                                      )
-                                    )}
+                                    }).map(() => renderPlaceholder())}
                                   </div>
 
                                   <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
@@ -1632,11 +1604,7 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.recommendSemester?.toString() ===
                                               semester
                                         ).length,
-                                    }).map((_, index) =>
-                                      renderPlaceholder(
-                                        `major-placeholder-${index}`
-                                      )
-                                    )}
+                                    }).map(() => renderPlaceholder())}
                                   </div>
                                   <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
                                   {/* Line between groups */}
@@ -1664,11 +1632,7 @@ export const EnrollAndCredits: React.FC = () => {
                                             course.recommendSemester?.toString() ===
                                               semester
                                         ).length,
-                                    }).map((_, index) =>
-                                      renderPlaceholder(
-                                        `free-placeholder-${index}`
-                                      )
-                                    )}
+                                    }).map(() => renderPlaceholder())}
                                   </div>
                                   <div className="flex flex-col items-center justify-center mt-4 w-full bg-blue-shadeb05 pt-1.5 pb-1.5">
                                     {totalCredits > 0 ? (
@@ -1734,85 +1698,6 @@ export const EnrollAndCredits: React.FC = () => {
           </div>
         </div>
       </div>
-      {/*<div className="my-10 bg-white bg-[url('/imgs/creditBG.svg')] rounded-2xl p-10 pt-4 pb-14 bg-cover bg-bottom">*/}
-      {/*  <div className="text-center">*/}
-      {/*    <div className="mb-6 flex items-center justify-center">*/}
-      {/*      <img src="/imgs/icon_book.png" alt="" className="w-[55px] mr-3"/>*/}
-      {/*      <h1 className="pt-5">จำนวนหน่วยกิตที่คงเหลือในแต่ละหมวดหมู่</h1>*/}
-      {/*    </div>*/}
-
-      {/*    <div className="grid md:grid-cols-3 gap-12">*/}
-      {/*      <div>*/}
-      {/*      <span className="font-bold text-blue-shadeb5">*/}
-      {/*        หมวดวิชาเฉพาะ (Major Requirements)*/}
-      {/*      </span>*/}
-
-      {/*        {remainingSubjectsForMajor.map(*/}
-      {/*            (*/}
-      {/*                subject: {*/}
-      {/*                  color: any;*/}
-      {/*                  name: string;*/}
-      {/*                  remaining: number;*/}
-      {/*                  subjectRemaining: number;*/}
-      {/*                },*/}
-      {/*                index: React.Key | null | undefined*/}
-      {/*            ) => (*/}
-      {/*                <li*/}
-      {/*                    key={index}*/}
-      {/*                    className={`my-2 font-normal text-${subject.color} text-left`}*/}
-      {/*                >*/}
-      {/*                  {subject.name} :{" "}*/}
-      {/*                  {subject.remaining > 0*/}
-      {/*                      ? subject.remaining + " " + "หน่วยกิต"*/}
-      {/*                      : "✓"}*/}
-      {/*                  (~*/}
-      {/*                  {subject.subjectRemaining} วิชา)*/}
-      {/*                </li>*/}
-      {/*            )*/}
-      {/*        )}*/}
-      {/*      </div>*/}
-      {/*      <div>*/}
-      {/*      <span className="font-bold text-collection-1-yellow-shade-y7">*/}
-      {/*        หมวดศึกษาทั่วไป (General Education)*/}
-      {/*      </span>*/}
-      {/*        {remainingSubjectsForGE.map(*/}
-      {/*            (*/}
-      {/*                subject: {*/}
-      {/*                  color: any;*/}
-      {/*                  name: string;*/}
-      {/*                  remaining: any;*/}
-      {/*                },*/}
-      {/*                index: React.Key | null | undefined*/}
-      {/*            ) => (*/}
-      {/*                <li*/}
-      {/*                    key={index}*/}
-      {/*                    className={`my-2 font-normal text-${subject.color} text-left`}*/}
-      {/*                >*/}
-      {/*                  {subject.name} :{" "}*/}
-      {/*                  {subject.remaining > 0*/}
-      {/*                      ? subject.remaining + " " + "หน่วยกิต"*/}
-      {/*                      : "✓"}*/}
-      {/*                </li>*/}
-      {/*            )*/}
-      {/*        )}*/}
-      {/*      </div>*/}
-      {/*      /!* Free Elective *!/*/}
-      {/*      <div>*/}
-      {/*      <span className="font-bold text-gray-500">*/}
-      {/*        {" "}*/}
-      {/*        /!* Adjust the color as needed *!/*/}
-      {/*        หมวดวิชาเลือกเสรี (Free Elective)*/}
-      {/*      </span>*/}
-      {/*        <li className={`mt-2 font-normal text-neutral-600 text-left`}>*/}
-      {/*          {remainingFreeElectives.name} :{" "}*/}
-      {/*          {remainingFreeElectives.remaining > 0*/}
-      {/*              ? remainingFreeElectives.remaining + " " + "หน่วยกิต"*/}
-      {/*              : "✓"}*/}
-      {/*        </li>*/}
-      {/*      </div>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
     </div>
   );
 };
