@@ -79,8 +79,8 @@ export default function PlanSettingPopup({
           console.error("Error fetching curriculum:", error);
           setPrograms([]);
           setPlans([]);
-          setSelectedProgram("");
-          setSelectedPlan("");
+          setSelectedProgram("-");
+          setSelectedPlan("-");
         }
       };
 
@@ -185,6 +185,7 @@ export default function PlanSettingPopup({
           </div>
 
           {/* Program Dropdown */}
+
           <div>
             <label className="block text-sm font-medium">หลักสูตร</label>
             <Listbox value={selectedProgram} onChange={setSelectedProgram}>
@@ -246,65 +247,67 @@ export default function PlanSettingPopup({
           </div>
 
           {/* Branch Dropdown (Optional) */}
-          <div>
-            <label className="block text-sm font-medium">สาย</label>
-            <Listbox value={selectedBranch} onChange={setSelectedBranch}>
-              <div className="relative mt-1">
-                <Listbox.Button className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                  <span className="block truncate">{selectedBranch}</span>
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <ChevronUpDownIcon
-                      className="h-5 w-5 text-blue-shadeb5"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </Listbox.Button>
-                <Transition
-                  leave="transition ease-in duration-100"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
-                    {branches.map((branch, idx) => (
-                      <Listbox.Option
-                        key={idx}
-                        className={({ active }) =>
-                          classNames(
-                            active
-                              ? "text-white bg-blue-shadeb5"
-                              : "text-gray-900",
-                            "relative cursor-default select-none py-2 pl-10 pr-4"
-                          )
-                        }
-                        value={branch}
-                      >
-                        {({ selected }) => (
-                          <>
-                            <span
-                              className={classNames(
-                                selected ? "font-medium" : "font-normal",
-                                "block truncate"
-                              )}
-                            >
-                              {branch}
-                            </span>
-                            {selected ? (
-                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <CheckIcon
-                                  className="h-5 w-5 text-blue-shadeb5"
-                                  aria-hidden="true"
-                                />
+          {branches.length < 1 && (
+            <div>
+              <label className="block text-sm font-medium">สาย</label>
+              <Listbox value={selectedBranch} onChange={setSelectedBranch}>
+                <div className="relative mt-1">
+                  <Listbox.Button className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <span className="block truncate">{selectedBranch}</span>
+                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                      <ChevronUpDownIcon
+                        className="h-5 w-5 text-blue-shadeb5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    leave="transition ease-in duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
+                      {branches.map((branch, idx) => (
+                        <Listbox.Option
+                          key={idx}
+                          className={({ active }) =>
+                            classNames(
+                              active
+                                ? "text-white bg-blue-shadeb5"
+                                : "text-gray-900",
+                              "relative cursor-default select-none py-2 pl-10 pr-4"
+                            )
+                          }
+                          value={branch}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={classNames(
+                                  selected ? "font-medium" : "font-normal",
+                                  "block truncate"
+                                )}
+                              >
+                                {branch}
                               </span>
-                            ) : null}
-                          </>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            </Listbox>
-          </div>
+                              {selected ? (
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                  <CheckIcon
+                                    className="h-5 w-5 text-blue-shadeb5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
+            </div>
+          )}
 
           {/* Plan Dropdown */}
           <div>

@@ -1,3 +1,4 @@
+import { PageContainer } from "common/components/Container/PageContainer";
 import { useEffect } from "react";
 import { useLoadingContext } from "react-router-loading";
 
@@ -9,7 +10,7 @@ function CreatePage() {
   }, []);
 
   return (
-    <div
+    <PageContainer
       className="w-screen flex flex-col justify-center items-center h-screen "
       style={{
         fontFamily: "IBM Plex Sans Thai, sans-serif",
@@ -80,7 +81,7 @@ function CreatePage() {
           </table>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

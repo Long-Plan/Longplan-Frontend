@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import { Course } from "utils/BoxUtils";
 import { toNumber } from "lodash-es";
 import { Nullable } from "tsdef";
+import { PageContainer } from "common/components/Container/PageContainer.tsx";
 
 type EnrolledCoursesData = {
   studentID: string;
@@ -559,21 +560,18 @@ function UserPage() {
   };
 
   return (
-    <div
-      className="h-full flex flex-col w-screen items-center"
-      style={{ fontFamily: "IBM Plex Sans Thai, sans-serif" }}
-    >
-      <div className="w-full max-w-[1450px] pl-16 mt-12 justify-center items-center">
-        <div className="flex bg-[#ECEEFA] rounded-t-2xl w-[1450px] shadow-2xl items-center justify-center bg-cover bg-bottom bg-[url('/imgs/ClockBG.svg')]">
+    <PageContainer className="flex flex-col w-screen items-center">
+      <div className="pl-12 mt-12 justify-center items-center">
+        <div className="flex bg-[#ECEEFA] rounded-t-2xl shadow-2xl items-center justify-center bg-cover bg-bottom bg-[url('/imgs/ClockBG.svg')]">
           <div className="flex flex-row items-center">
             <GeneralData user={userData} year={year} semester={semester} />
           </div>
         </div>
-        <div className="bg-white rounded-b-2xl shadow-lg w-[1450px] h-[800px] pb-32">
+        <div className="bg-white rounded-b-2xl shadow-lg pb-16 px-12">
           <EnrollData />
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

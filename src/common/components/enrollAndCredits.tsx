@@ -20,6 +20,9 @@ import SummaryBox from "./SummaryBox/CreditSummary.tsx";
 import CourseRemainBox from "./SummaryBox/CourseRemainBox.tsx";
 import InfoModal from "./Popup/InfoModal.tsx";
 import PlanSettingPopup from "./PlanSelector/PlanSettingPopup.tsx";
+import { MainContainer } from "./Container/MainContainer.tsx";
+import { SmContainer } from "./Container/SmallContainer.tsx";
+// import { SmContainer } from "./Container/SmallContainer.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -109,7 +112,7 @@ export const EnrollAndCredits: React.FC = () => {
   });
   const [showInfo, setShowInfo] = useState(false);
   const [showInfoBox, setShowInfoBox] = useState(false);
-  const [showPlanSetting, setShowPlanSetting] = useState(true);
+  const [showPlanSetting, setShowPlanSetting] = useState(false);
 
   const { refetch } = useQuery("curriculum", fetchData, {
     onSuccess: async (data: {
@@ -1081,7 +1084,7 @@ export const EnrollAndCredits: React.FC = () => {
   const heightDiv = 57.7;
 
   return (
-    <div className={`flex flex-col items-center w-full pt-8 ml-10`}>
+    <div className={`flex flex-col items-center `}>
       {showPlanSetting && (
         <PlanSettingPopup onClose={handleClose} mode={true} />
       )}
@@ -1110,7 +1113,7 @@ export const EnrollAndCredits: React.FC = () => {
       )}
       <div className="pb-10"></div>
       <div className="flex flex-row items-start space-x-4">
-        <div
+        <MainContainer
           className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4 shadow-lg border border-gray-200`}
         >
           <div className="relative rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
@@ -1669,9 +1672,9 @@ export const EnrollAndCredits: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </MainContainer>
 
-        <div className="bg-white p-6 rounded-[20px] shadow-lg border border-gray-200">
+        <SmContainer className="bg-white p-6 rounded-[20px] shadow-lg border border-gray-200">
           <div className="mb-6">
             <SummaryBox
               groupCredits={groupCredits}
@@ -1705,7 +1708,7 @@ export const EnrollAndCredits: React.FC = () => {
               }}
             />
           </div>
-        </div>
+        </SmContainer>
       </div>
     </div>
   );

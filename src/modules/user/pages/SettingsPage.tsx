@@ -1,3 +1,4 @@
+import { PageContainer } from "common/components/Container/PageContainer";
 import PlanSettingPopup from "common/components/PlanSelector/PlanSettingPopup";
 import { useState } from "react";
 
@@ -9,14 +10,7 @@ function SettingsPage() {
   };
 
   return (
-    <div
-      className="w-screen flex flex-col"
-      style={{
-        fontFamily: "IBM Plex Sans Thai, sans-serif",
-        backgroundColor: "#F5F5F5",
-        overflowX: "hidden",
-      }}
-    >
+    <PageContainer>
       {isPopupOpen && <PlanSettingPopup onClose={handleClose} mode={false} />}
       {/* <div className="flex justify-center items-center h-full">
         <button
@@ -26,7 +20,7 @@ function SettingsPage() {
           setting
         </button>
       </div> */}
-    </div>
+    </PageContainer>
   );
 }
 
