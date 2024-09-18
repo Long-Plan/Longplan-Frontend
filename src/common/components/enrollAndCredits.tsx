@@ -1084,7 +1084,7 @@ export const EnrollAndCredits: React.FC = () => {
   const heightDiv = 57.7;
 
   return (
-    <div className={`flex flex-col items-center `}>
+    <div className={`flex flex-col items-center`}>
       {showPlanSetting && (
         <PlanSettingPopup onClose={handleClose} mode={true} />
       )}
@@ -1674,7 +1674,7 @@ export const EnrollAndCredits: React.FC = () => {
           </div>
         </MainContainer>
 
-        <SmContainer className="bg-white p-6 rounded-[20px] shadow-lg border border-gray-200">
+        <SmContainer>
           <div className="mb-6">
             <SummaryBox
               groupCredits={groupCredits}

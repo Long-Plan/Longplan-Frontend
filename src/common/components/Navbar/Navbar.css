@@ -12,7 +12,7 @@
   transform: translateY(-50%); /* Shift upward by 50% of its own height */
   border-radius: 0px 20px 20px 0px;
   font-family: "IBM Plex Sans Thai", sans-serif;
-  z-index: 1000;
+  z-index: 10;
 }
 /* ... rest of your CSS remains the same ... */
 
