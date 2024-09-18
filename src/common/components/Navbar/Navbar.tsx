@@ -1,20 +1,21 @@
 import useGlobalStore from "common/contexts/StoreContext";
 import "./Navbar.css";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getLogout } from "common/apis/logout";
 import { ClientRouteKey, LocalStorageKey } from "common/constants/keys";
 import { UserIcon } from "@heroicons/react/20/solid";
+
 interface NavbarProps {
   // Add any props you need, like navigation links
 }
 
 const Navbar: React.FC<NavbarProps> = () => {
   const { setUserData } = useGlobalStore();
-  const [isHome, setIsHome] = useState(false);
-  const [isCreate, setIsCreate] = useState(false);
-  const [isProfile, setIsProfile] = useState(false); // Initialize state for profile image
+  const [activeRoute, setActiveRoute] = useState<string>("");
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleLogout = async () => {
     await getLogout();
     setUserData(null);
@@ -23,78 +24,79 @@ const Navbar: React.FC<NavbarProps> = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === "/user") {
-      setIsProfile(true);
-    } else {
-      setIsProfile(false);
-    }
-    if (location.pathname === "/home") {
-      setIsHome(true);
-    } else {
-      setIsHome(false);
-    }
-    if (location.pathname === "/create") {
-      setIsCreate(true);
-    } else {
-      setIsCreate(false);
-    }
+    setActiveRoute(location.pathname);
   }, [location.pathname]);
-  return (
-    <nav className="navbar shadow-box-shadow w-max h-[600px]">
-      {/* Your navigation content goes here */}
-      <ul className="navbar-nav">
-        <li className="nav-item flex text-cetner items-center">
-          <Link to="/home">
-            <img
-              src={isHome ? "/imgs/Home_p.svg" : "/imgs/Home.svg"}
-              alt=""
-              style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
-            />
-          </Link>
-        </li>
 
+  // Helper function to render Nav Items
+  const renderNavItem = (
+    to: string,
+    imgSrc: string,
+    imgActiveSrc: string,
+    label?: string
+  ) => (
+    <li className="nav-item flex flex-col justify-center items-center text-center">
+      <Link to={to} className="flex flex-col items-center justify-center">
+        <img
+          src={activeRoute === to ? imgActiveSrc : imgSrc}
+          alt={label || ""}
+          className="transition-all duration-300 transform group hover:scale-125 hover:rotate-6 w-[50px] h-[50px]"
+        />
+        {label && <p className="text-[14px] mt-2">{label}</p>}
+      </Link>
+    </li>
+  );
+
+  return (
+    <nav
+      className="navbar shadow-box-shadow w-max h-[600px] p-4"
+      role="navigation"
+      aria-label="Main Navigation"
+    >
+      <ul className="navbar-nav">
+        {renderNavItem("/home", "/imgs/Home.svg", "/imgs/Home_p.svg")}
         <hr className="bg-gray-100 opacity-100 mt-4" />
-        <li className="nav-item flex text-center items-center">
-          <Link to="/create">
-            <img
-              src={isCreate ? "/imgs/Create_p.svg" : "/imgs/Create.svg"}
-              alt=""
-              style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
-            />
-            <p className={`text-[14px] mt-2`}>Plan</p>
+        {renderNavItem(
+          "/create",
+          "/imgs/Create.svg",
+          "/imgs/Create_p.svg",
+          "Plan"
+        )}
+        {renderNavItem(
+          "/user",
+          "/imgs/Profile.svg",
+          "/imgs/Profile_p.svg",
+          "Profile"
+        )}
+        <li className="nav-item flex flex-col justify-center items-center text-center">
+          <Link
+            to="/settings"
+            className="flex flex-col items-center justify-center"
+          >
+            <UserIcon className="w-10 h-10 transition-all duration-300 transform group hover:scale-125 hover:rotate-6" />
+            <p className="text-[14px] mt-2">Setting</p>
           </Link>
         </li>
-        <li className="nav-item text-center items-center">
-          <Link to="/user">
-            <img
-              src={isProfile ? "/imgs/Profile_p.svg" : "/imgs/Profile.svg"}
-              alt=""
-              style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
-            />
-            <p className={`text-[14px] mt-2`}>Profile</p>
-          </Link>
-        </li>
-        <li className="nav-item text-center items-center">
-          <Link to="/settings">
-            <UserIcon className="transition-all duration-300 transform group hover:scale-125 hover:rotate-6" />
-            <p className={`text-[14px] mt-2`}>setting</p>
-          </Link>
-        </li>
-        <li className="nav-bot mb-2 cursor-pointer text-center items-center">
-          <a className="nav-link" onClick={handleLogout}>
+        <li className="nav-bot mb-2 cursor-pointer flex flex-col justify-center items-center text-center">
+          <button
+            className="nav-link flex flex-col items-center justify-center"
+            onClick={handleLogout}
+            style={{
+              background: "none",
+              border: "none",
+              padding: "0",
+              cursor: "pointer",
+            }}
+            aria-label="Log out"
+          >
             <img
               src="/imgs/Logout.png"
-              alt=""
-              style={{ width: "50px" }}
-              className={`transition-all duration-300 transform group hover:scale-125 hover:rotate-6`}
+              alt="Log out"
+              style={{ width: "50px", height: "50px" }}
+              className="transition-all duration-300 transform group hover:scale-125 hover:rotate-6"
             />
-            Log out
-          </a>
+            <p className="text-[14px] mt-2">Log out</p>
+          </button>
         </li>
-        {/* More links as needed */}
       </ul>
     </nav>
   );
