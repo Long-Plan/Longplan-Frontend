@@ -7,7 +7,7 @@ export function PlanDiagram() {
     <div className="flex items-start space-x-4">
       <MainContainer>
         <div className="p-4">
-          <h3 className="text-center p-4">เลือกวิชาที่ต้องการแสดงข้อมูล</h3>
+          <h2 className="text-center p-4">เลือกวิชาที่ต้องการแสดงข้อมูล</h2>
           {/* Main container for the course information */}
           <div className="flex flex-col space-y-4 w-[512px] rounded-[20px] p-4 border border-blue-shadeb3">
             <div className="flex items-center space-x-4 rounded-[12px] border border-blue-shadeb5 pr-4">
@@ -18,10 +18,10 @@ export function PlanDiagram() {
               </div>
 
               {/* Center - Course Title */}
-              <h3 className="text-base flex-grow">Computer Programming</h3>
+              <h2 className="text-base flex-grow">Computer Programming</h2>
 
               {/* Right side - Units or credits */}
-              <div className="text-blue-600 font-bold">3</div>
+              <div className="text-blue-shadeb5 font-bold">3</div>
             </div>
 
             {/* Recommended Year and Term */}

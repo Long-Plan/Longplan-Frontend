@@ -1,3 +1,5 @@
+import { CheckBadgeIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
+
 // CreditSummary.tsx
 const CreditSummary = ({
   title,
@@ -8,7 +10,6 @@ const CreditSummary = ({
   borderColor,
   bgColor,
   textColor,
-  checkBgColor,
 }: {
   title: string;
   titleEng: string;
@@ -18,7 +19,6 @@ const CreditSummary = ({
   borderColor: string;
   bgColor: string;
   textColor: string;
-  checkBgColor: string;
 }) => (
   <div
     className={`w-auto h-12 p-1 ${bgColor} rounded-tl-2xl rounded-tr-2xl border-b-0 border border-solid ${borderColor} flex items-center gap-8`}
@@ -26,12 +26,7 @@ const CreditSummary = ({
     <p className="flex flex-row justify-center items-center ml-4">
       <span className={`${textColor} text-sm flex flex-row items-start `}>
         {earnedCredits >= maxCredits && (
-          <span
-            className={`text-xs mx-2 px-[4px] border border-solid ${borderColor} rounded-full text-center items-center justify-center`}
-            style={{ backgroundColor: checkBgColor }}
-          >
-            ✓
-          </span>
+          <CheckBadgeIcon className={`${borderColor} w-8 h-8`} />
         )}
 
         <div className="grid grid-rows-auto">
@@ -61,7 +56,6 @@ const FreeSummary = ({
   borderColor,
   bgColor,
   textColor,
-  checkBgColor,
 }: {
   title: string;
   titleEng: string;
@@ -71,7 +65,6 @@ const FreeSummary = ({
   borderColor: string;
   bgColor: string;
   textColor: string;
-  checkBgColor: string;
 }) => (
   <div
     className={`w-auto h-12 p-1 ${bgColor} rounded-tl-2xl rounded-2xl border border-solid ${borderColor} flex items-center gap-8`}
@@ -79,12 +72,7 @@ const FreeSummary = ({
     <p className="flex flex-row justify-center items-center ml-4">
       <span className={`${textColor} text-sm flex flex-row items-start `}>
         {earnedCredits >= maxCredits && (
-          <span
-            className={`text-xs mx-2 px-[4px] border border-solid ${borderColor} rounded-full text-center items-center justify-center`}
-            style={{ backgroundColor: checkBgColor }}
-          >
-            ✓
-          </span>
+          <CheckBadgeIcon className={`${borderColor} w-8 h-8`} />
         )}
 
         <div className="grid grid-rows-auto">
@@ -141,27 +129,50 @@ const CreditListGroup = ({
   <div
     className={`rounded-bl-2xl rounded-br-2xl bg-white px-4 py-1 border-t-0 border border-solid ${borderColor} mb-4`}
   >
-    {groups.map((group) => (
-      <p
-        key={group.groupName}
-        className={`my-3 text-[14px] text-${getColorForGroupName(
-          group.groupName
-        )}`}
-      >
-        <li>
-          {`${group.groupName} : ${groupCredits[group.groupName] || "0"} / ${
-            group.requiredCredits
-          }`}
-          {groupCredits[group.groupName] === group.requiredCredits && (
+    <ul className="list-none">
+      {groups.map((group) => (
+        <li
+          key={group.groupName}
+          className={`my-3 text-[14px] flex items-center space-x-2`}
+        >
+          {/* CheckCircleIcon or bullet */}
+          {groupCredits[group.groupName] === group.requiredCredits ? (
+            <CheckCircleIcon
+              className={`w-6 h-6 text-${getColorForGroupName(
+                group.groupName
+              )}`}
+              aria-label="Completed"
+            />
+          ) : (
             <span
-              className={`inline-block mx-2 px-[4px] text-center font-bold `}
+              className={`w-6 h-6 inline-block rounded-full bg-${getColorForGroupName(
+                group.groupName
+              )} text-center text-${getColorForGroupName(
+                group.groupName
+              )} font-bold`}
             >
-              ✓
+              •
             </span>
           )}
+
+          {/* Group Name and Credits */}
+          <span
+            className={`text-${getColorForGroupName(
+              group.groupName
+            )} flex-grow flex w-full font-semibold`}
+          >
+            {`${group.groupName}`}
+          </span>
+          <span
+            className={`text-${getColorForGroupName(
+              group.groupName
+            )} text-right w-[100px] font-semibold`}
+          >
+            {`${groupCredits[group.groupName]} / ${group.requiredCredits}`}
+          </span>
         </li>
-      </p>
-    ))}
+      ))}
+    </ul>
   </div>
 );
 
@@ -233,7 +244,6 @@ const SummaryBox = ({
           borderColor="border-amber-300"
           bgColor="bg-yellow-50"
           textColor="text-collection-1-yellow-shade-y7"
-          checkBgColor="var(--collection-1-yellow-shade-y2)"
         />
 
         {/* General Education Groups */}
@@ -253,7 +263,6 @@ const SummaryBox = ({
           borderColor="border-blue-shadeb4"
           bgColor="bg-collection-1-b-sl"
           textColor="text-blue-shadeb5"
-          checkBgColor="#B0B8FF"
         />
 
         {/* Major Requirement Groups */}
@@ -273,7 +282,6 @@ const SummaryBox = ({
           borderColor="border-neutral-400"
           bgColor="bg-neutral-100"
           textColor="text-neutral-600"
-          checkBgColor="#C3C3C3"
         />
       </div>
 
