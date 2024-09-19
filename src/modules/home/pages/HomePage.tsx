@@ -6,6 +6,7 @@ import EnrollAndCredits from "common/components/enrollAndCredits";
 import Curriculum from "common/components/Curriculum";
 import CategoryTree from "common/components/CategoryTree";
 import { PageContainer } from "common/components/Container/PageContainer";
+import CurriculumBox from "common/components/CurriculumBox";
 // import { PlanDiagram } from "common/components/PlanComponent/PlanningDiagram";
 // import CheckPage from "common/components/checkPage";
 
@@ -20,9 +21,9 @@ function Home() {
       {/* <StudentCheckPage /> */}
       <EnrollAndCredits />
       {/* <CheckPage /> */}
-      {/* <div className={`flex justify-center`}>
-        <CategoryTree />
-      </div> */}
+      <div className={`flex justify-center`}>
+        <CurriculumBox />
+      </div>
       {/* <FeedBack /> */}
       {/* <CourseTitleExtractor /> */}
     </PageContainer>

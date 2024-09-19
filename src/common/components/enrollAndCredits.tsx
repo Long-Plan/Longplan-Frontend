@@ -22,7 +22,6 @@ import InfoModal from "./Popup/InfoModal.tsx";
 import PlanSettingPopup from "./PlanSelector/PlanSettingPopup.tsx";
 import { MainContainer } from "./Container/MainContainer.tsx";
 import { SmContainer } from "./Container/SmallContainer.tsx";
-// import { SmContainer } from "./Container/SmallContainer.tsx";
 
 type CurriculumPayload = {
   major: string;
@@ -1081,7 +1080,7 @@ export const EnrollAndCredits: React.FC = () => {
     return boxes;
   }
 
-  const heightDiv = 57.7;
+  const heightDiv = 58.9;
 
   return (
     <div className={`flex flex-col items-center`}>
@@ -1123,7 +1122,7 @@ export const EnrollAndCredits: React.FC = () => {
                 style={{
                   height: `${maxGeneralEducationCourses * heightDiv + 26}px`, // Dynamic height based on the number of courses
                 }}
-                className="bg-yellow-50 border-r-0 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-collection-1-yellow-shade-y7 text-sm"
+                className="bg-yellow-50 border-r-0 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-collection-1-yellow-shade-y7 text-sm hover:bg-yellow-100 hover:font-bold transition-all duration-200"
               >
                 <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                   General Education
@@ -1135,7 +1134,7 @@ export const EnrollAndCredits: React.FC = () => {
                 style={{
                   height: `${maxMajorRequirementCourses * heightDiv + 34}px`, // Dynamic height for major requirements
                 }}
-                className="bg-blue-shadeb05 border-r-0 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-sm"
+                className="bg-blue-shadeb05 border-r-0 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-sm hover:bg-blue-shadeb1 hover:font-bold transition-all duration-200"
               >
                 <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)]  cursor-default">
                   Major Requirements
@@ -1152,7 +1151,7 @@ export const EnrollAndCredits: React.FC = () => {
                         : maxFreeElectiveCourses * heightDiv + 32 + 2
                     }px`, // Dynamic height based on free electives
                   }}
-                  className="bg-collection-1-black-sl border-r-0 border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-black text-sm"
+                  className="bg-collection-1-black-sl border-r-0 border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-black text-sm hover:bg-gray-300 hover:font-bold transition-all duration-200"
                 >
                   <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
                     {maxFreeElectiveCourses > 1 ? "Free Elective" : "Free"}
@@ -1163,9 +1162,9 @@ export const EnrollAndCredits: React.FC = () => {
               {/* Credits Section */}
               <div
                 style={{ height: `${30 + 5}px` }}
-                className="bg-blue-shadeb1 border-r-0 border border-solid border-blue-shadeb5 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-center"
+                className="bg-blue-shadeb1 border-r-0 border border-solid border-blue-shadeb5 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-center hover:bg-blue-shadeb2 hover:font-bold  transition-all duration-200"
               >
-                <p className="cursor-default text-[10px] pr-2 font-bold text-center ml-2">
+                <p className="cursor-default text-[10px] font-semibold pr-2 text-center ml-2">
                   Credit
                 </p>
               </div>
@@ -1203,15 +1202,14 @@ export const EnrollAndCredits: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="overflow-auto hover:overflow-x-scroll overflow-y-hidden overscroll-x-contain border border-x-[1px] border-y-0 border-solid border-gray-100 rounded-t-[20px] rounded-br-[20px]">
+            <div className="overflow-auto hover:overflow-x-scroll overflow-y-hidden overscroll-x-contain border border-x-[1px] border-y-0 border-solid border-gray-100 rounded-t-[20px] rounded-br-[20px] w-full">
               <div className="flex">
                 {curriculumData &&
                   groupedEnrolls &&
                   Object.keys(groupedEnrolls).map((year) => (
                     <div
-                      key={year}
                       className="flex-shrink-0"
-                      style={{ minWidth: "25%", width: "auto" }}
+                      style={{ minWidth: "20%", width: "auto" }}
                     >
                       <div
                         className={`bg-white rounded-tl-[20px] rounded-tr-[20px] py-2 border border-solid border-b-0 border-gray-200`}
@@ -1234,7 +1232,7 @@ export const EnrollAndCredits: React.FC = () => {
                         } gap-0 border border-solid border-x-1 border-y-0 border-gray-200`}
                       >
                         {Object.keys(groupedEnrolls[year]).map((semester) => (
-                          <div key={semester}>
+                          <div>
                             <p
                               className={`text-center text-[10px] text-blue-shadeb6 w-30 
                                     px-7 py-0.5 bg-blue-shadeb05 rounded-tl-2xl rounded-tr-2xl cursor-default`}

@@ -29,7 +29,7 @@ const CreditSummary = ({
           <CheckBadgeIcon className={`${borderColor} w-8 h-8`} />
         )}
 
-        <div className="grid grid-rows-auto">
+        <div className="grid grid-rows-auto flex-grow">
           {title}
           <span
             className={`${textColor} text-xs font-medium text-center`}
@@ -38,9 +38,9 @@ const CreditSummary = ({
       </span>
     </p>
     <div
-      className={`ml-auto px-5 mr-2 bg-white rounded-[10px] border border-solid ${borderColor} justify-center items-center gap-2.5 inline-flex`}
+      className={`ml-auto px-2 mr-2 bg-white rounded-[10px] border border-solid ${borderColor} justify-center items-center  inline-flex`}
     >
-      <div className={`text-center text-sm font-bold ${textColor}`}>
+      <div className={`text-center text-sm font-bold ${textColor} `}>
         {`${earnedCredits} / ${totalCredits}`}
       </div>
     </div>
@@ -84,7 +84,7 @@ const FreeSummary = ({
       </span>
     </p>
     <div
-      className={`ml-auto px-5 mr-2 bg-white rounded-[10px] border border-solid ${borderColor} justify-center items-center gap-2.5 inline-flex`}
+      className={`ml-auto px-2 mr-2 bg-white rounded-[10px] border border-solid ${borderColor} justify-center items-center gap-2.5 inline-flex`}
     >
       <div className={`text-center text-sm font-bold text-${textColor}`}>
         {`${earnedCredits} / ${totalCredits}`}
@@ -145,9 +145,7 @@ const CreditListGroup = ({
             />
           ) : (
             <span
-              className={`w-6 h-6 inline-block rounded-full bg-${getColorForGroupName(
-                group.groupName
-              )} text-center text-${getColorForGroupName(
+              className={`w-6 h-6 text-center text-${getColorForGroupName(
                 group.groupName
               )} font-bold`}
             >

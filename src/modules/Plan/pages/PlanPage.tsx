@@ -1,4 +1,5 @@
 import { PageContainer } from "common/components/Container/PageContainer";
+// import CurriculumBox from "common/components/CurriculumBox";
 // import EnrollAndCredits from "common/components/enrollAndCredits";
 import { PlanDiagram } from "common/components/PlanComponent/PlanningDiagram";
 import { useEffect } from "react";

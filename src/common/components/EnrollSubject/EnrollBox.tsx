@@ -35,7 +35,7 @@ const EnrollBox: React.FC<EnrollBoxProps> = ({
       onClick={onClick} // Handle click event
     >
       <div
-        className={`relative w-[7px] h-[43px] ${highlightColor} rounded-[10px_0px_0px_10px]`}
+        className={`relative w-[7px] h-[45px] ${highlightColor} rounded-[10px_0px_0px_10px]`}
       />
       <div
         className={`relative ${
@@ -45,7 +45,7 @@ const EnrollBox: React.FC<EnrollBoxProps> = ({
         {!dummy ? (
           <>
             <span
-              className={`font-h7 ${textColor} text-[13px] tracking-[0] leading-[21px]`}
+              className={`font-h7 ${textColor} text-[13px] tracking-[0] leading-[21px] font-semibold`}
             >
               {courseNo}
               <br />
@@ -67,7 +67,7 @@ const EnrollBox: React.FC<EnrollBoxProps> = ({
         <div
           className={`font-h2 ${textColor} ${
             dummy ? "text-[12px]" : "text-[10px]"
-          } text-center tracking-[0] leading-[15.8px] whitespace-nowrap`}
+          } text-center tracking-[0] leading-[15.8px] whitespace-nowrap font-semibold`}
         >
           {courseCredit}
         </div>

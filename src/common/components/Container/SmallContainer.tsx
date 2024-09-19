@@ -9,7 +9,7 @@ export const SmContainer = styled.div`
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   padding: 0.5rem;
-  width: 37%;
+  width: 35%;
   overflow-y: auto;
 
   @media (min-width: 768px) {

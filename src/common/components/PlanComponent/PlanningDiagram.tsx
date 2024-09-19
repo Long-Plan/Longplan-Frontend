@@ -1,6 +1,9 @@
 import { CheckBadgeIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
 import { MainContainer } from "../Container/MainContainer";
 import MajorEnrollBox from "../EnrollSubject/MajorEnroll";
+import { MajorElecBox } from "../ElecSubject/ElecBoxGroup";
+import ElecBoxs from "../ElecSubject/ElecBox";
+import ElecBoxIsolate from "../ElecSubject/ElecBoxIsolate";
 
 export function PlanDiagram() {
   return (
@@ -89,13 +92,16 @@ export function PlanDiagram() {
                     <div className="mr-7 font-semibold">18/18</div>
                   </li>
                 </ol>
-                <MajorEnrollBox
-                  courseNo={"000000"}
+                <ElecBoxIsolate
+                  courseNo={"261200"}
                   courseTitleEng={"Elective"}
                   courseCredit={3}
                   courseFullName={"Major Elective"}
                   courseCategory={"Major Elective"}
-                  courseRecommendedYear={"n/a"}
+                  coursePrerequisites={[]}
+                  BoxComponent={MajorElecBox}
+                  recommendYear={0}
+                  recommendSemester={0}
                 />
               </div>
             </div>
