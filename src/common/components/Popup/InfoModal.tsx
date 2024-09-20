@@ -31,7 +31,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
           <img
             src={imageUrl}
             alt={imageAlt}
-            className="w-[500px] pb-4 transition duration-300 hover:scale-105"
+            className="w-[500px] pb-4 transition duration-300 hover:scale-100"
           />
         </div>
         <button

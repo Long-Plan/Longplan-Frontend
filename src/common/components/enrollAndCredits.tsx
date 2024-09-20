@@ -20,8 +20,9 @@ import SummaryBox from "./SummaryBox/CreditSummary.tsx";
 import CourseRemainBox from "./SummaryBox/CourseRemainBox.tsx";
 import InfoModal from "./Popup/InfoModal.tsx";
 import PlanSettingPopup from "./PlanSelector/PlanSettingPopup.tsx";
-import { MainContainer } from "./Container/MainContainer.tsx";
 import { SmContainer } from "./Container/SmallContainer.tsx";
+import ContainerWithoutHeader from "./Container/WithoutHeaderContainer.tsx";
+import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 
 type CurriculumPayload = {
   major: string;
@@ -1112,565 +1113,580 @@ export const EnrollAndCredits: React.FC = () => {
       )}
       <div className="pb-10"></div>
       <div className="flex flex-row items-start space-x-4">
-        <MainContainer
-          className={`flex items-center bg-white rounded-[20px] py-4 pr-4 mr-4 shadow-lg border border-gray-200`}
-        >
-          <div className="relative rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
-            <div className="mt-[58px] ml-4 flex flex-col h-full">
-              {/* General Education Section */}
-              <div
-                style={{
-                  height: `${maxGeneralEducationCourses * heightDiv + 26}px`, // Dynamic height based on the number of courses
-                }}
-                className="bg-yellow-50 border-r-0 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-collection-1-yellow-shade-y7 text-sm hover:bg-yellow-100 hover:font-bold transition-all duration-200"
-              >
-                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
-                  General Education
-                </p>
-              </div>
-
-              {/* Major Requirements Section */}
-              <div
-                style={{
-                  height: `${maxMajorRequirementCourses * heightDiv + 34}px`, // Dynamic height for major requirements
-                }}
-                className="bg-blue-shadeb05 border-r-0 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-sm hover:bg-blue-shadeb1 hover:font-bold transition-all duration-200"
-              >
-                <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)]  cursor-default">
-                  Major Requirements
-                </p>
-              </div>
-
-              {/* Free Electives Section */}
-              {maxFreeElectiveCourses > 0 && (
+        <ContainerWithoutHeader>
+          <div className="flex justify-center">
+            <div className="relative rounded-[20px] pr-[54px] py-8 w-[30px] h-full">
+              <div className="mt-[75px] ml-4 flex flex-col h-full">
+                {/* General Education Section */}
                 <div
                   style={{
-                    height: `${
-                      maxFreeElectiveCourses === 1
-                        ? maxFreeElectiveCourses * heightDiv + 33.5
-                        : maxFreeElectiveCourses * heightDiv + 32 + 2
-                    }px`, // Dynamic height based on free electives
+                    height: `${maxGeneralEducationCourses * heightDiv + 26}px`, // Dynamic height based on the number of courses
                   }}
-                  className="bg-collection-1-black-sl border-r-0 border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-black text-sm hover:bg-gray-300 hover:font-bold transition-all duration-200"
+                  className="bg-yellow-50 border-r-0 border border-solid border-amber-300 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-collection-1-yellow-shade-y7 text-sm hover:bg-yellow-100 hover:font-bold transition-all duration-200"
                 >
                   <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
-                    {maxFreeElectiveCourses > 1 ? "Free Elective" : "Free"}
+                    General Education
                   </p>
                 </div>
-              )}
 
-              {/* Credits Section */}
-              <div
-                style={{ height: `${30 + 5}px` }}
-                className="bg-blue-shadeb1 border-r-0 border border-solid border-blue-shadeb5 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-center hover:bg-blue-shadeb2 hover:font-bold  transition-all duration-200"
-              >
-                <p className="cursor-default text-[10px] font-semibold pr-2 text-center ml-2">
-                  Credit
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-[20px] w-full pb-12 cursor-default">
-            <div className="flex justify-end pb-2 m-2 top-0 right-0 h-[30px]">
-              <div className={`flex flex-cols justify-center items-center`}>
-                <div className="flex border-[2px] border-solid border-blue-shadeb5 w-[30px] h-[10px] rounded-[20px] bg-blue-shadeb1 mr-2" />
-                <p className={`text-sm text-gray mr-4`}>เรียนแล้ว</p>
-              </div>
-              <div className={`flex flex-cols justify-center items-center`}>
-                <div className="flex border-[2px] border-solid border-blue-shadeb5 w-[30px] h-[10px] rounded-[20px] bg-white mr-2" />
-                <p className={`text-sm text-gray mr-4`}>ยังไม่ได้เรียน</p>
-              </div>
-              <div className={`flex flex-cols justify-center items-center`}>
-                <div className="flex border-[2px] border-solid border-gray-300 w-[30px] h-[10px] rounded-[20px] bg-gray-0 mr-2" />
-                <p className={`text-sm text-gray mr-8`}>F/W</p>
-              </div>
-              <div className={`flex flex-cols justify-center items-center`}>
-                <button
-                  className={`flex border-[2px] bg-white border-solid border-blue-shadeb5 rounded-[20px] text-sm p-1 w-[20px] h-[20px] 
-                    text-center justify-center items-center text-blue-shadeb5 transition-all duration-300 hover:scale-125`}
-                  onClick={() => setShowInfo(true)}
+                {/* Major Requirements Section */}
+                <div
+                  style={{
+                    height: `${maxMajorRequirementCourses * heightDiv + 34}px`, // Dynamic height for major requirements
+                  }}
+                  className="bg-blue-shadeb05 border-r-0 border border-solid border-blue-shadeb3 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-sm hover:bg-blue-shadeb1 hover:font-bold transition-all duration-200"
                 >
-                  ?
-                </button>
-                {showInfo && (
-                  <InfoModal
-                    title="ข้อมูลชนิดกล่องวิชาในแต่ละหมวดหมู่"
-                    imageUrl="/imgs/Subjectbox_Details.svg"
-                    imageAlt="Subject Box Details"
-                    onClose={() => setShowInfo(false)}
-                  />
+                  <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)]  cursor-default">
+                    Major Requirements
+                  </p>
+                </div>
+
+                {/* Free Electives Section */}
+                {maxFreeElectiveCourses > 0 && (
+                  <div
+                    style={{
+                      height: `${
+                        maxFreeElectiveCourses === 1
+                          ? maxFreeElectiveCourses * heightDiv + 33.5
+                          : maxFreeElectiveCourses * heightDiv + 32 + 2
+                      }px`, // Dynamic height based on free electives
+                    }}
+                    className="bg-collection-1-black-sl border-r-0 border border-solid border-collection-1-black-shade-bl4 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-black text-sm hover:bg-gray-300 hover:font-bold transition-all duration-200"
+                  >
+                    <p className="[writing-mode:vertical-lr] [transform:rotate(180deg)] cursor-default">
+                      {maxFreeElectiveCourses > 1 ? "Free Elective" : "Free"}
+                    </p>
+                  </div>
                 )}
+
+                {/* Credits Section */}
+                <div
+                  style={{ height: `${30 + 5}px` }}
+                  className="bg-blue-shadeb1 border-r-0 border border-solid border-blue-shadeb5 flex items-center justify-center w-[40px] rounded-tl-[20px] rounded-bl-[20px] text-blue-shadeb5 text-center hover:bg-blue-shadeb2 hover:font-bold  transition-all duration-200"
+                >
+                  <p className="cursor-default text-[10px] font-semibold pr-2 text-center ml-2">
+                    Credit
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="overflow-auto hover:overflow-x-scroll overflow-y-hidden overscroll-x-contain border border-x-[1px] border-y-0 border-solid border-gray-100 rounded-t-[20px] rounded-br-[20px] w-full">
-              <div className="flex">
-                {curriculumData &&
-                  groupedEnrolls &&
-                  Object.keys(groupedEnrolls).map((year) => (
-                    <div
-                      className="flex-shrink-0"
-                      style={{ minWidth: "20%", width: "auto" }}
-                    >
-                      <div
-                        className={`bg-white rounded-tl-[20px] rounded-tr-[20px] py-2 border border-solid border-b-0 border-gray-200`}
-                      >
-                        <h2 className="text-center cursor-default">
-                          {" "}
-                          {numberToOrdinal(toInteger(year))} Year
-                        </h2>
-                      </div>
+            <div className="bg-white rounded-[20px] w-full pb-12 cursor-default">
+              <div className="flex justify-end pb-2 m-2 top-0 right-0 h-[30px]">
+                <div className={`flex flex-cols justify-center items-center`}>
+                  <div className="flex border-[2px] border-solid border-blue-shadeb5 w-[30px] h-[10px] rounded-[20px] bg-blue-shadeb1 mr-2" />
+                  <p className={`text-sm text-gray mr-4`}>เรียนแล้ว</p>
+                </div>
+                <div className={`flex flex-cols justify-center items-center`}>
+                  <div className="flex border-[2px] border-solid border-blue-shadeb5 w-[30px] h-[10px] rounded-[20px] bg-white mr-2" />
+                  <p className={`text-sm text-gray mr-4`}>ยังไม่ได้เรียน</p>
+                </div>
+                <div className={`flex flex-cols justify-center items-center`}>
+                  <div className="flex border-[2px] border-solid border-gray-300 w-[30px] h-[10px] rounded-[20px] bg-gray-0 mr-2" />
+                  <p className={`text-sm text-gray mr-8`}>F/W</p>
+                </div>
+                <div className={`flex flex-cols justify-center items-center`}>
+                  <QuestionMarkCircleIcon
+                    className={`flex w-[25px] h-[25px] cursor-pointer justify-center items-center text-blue-shadeb5 transition-all duration-300 hover:scale-125`}
+                    onClick={() => setShowInfo(true)}
+                  >
+                    ?
+                  </QuestionMarkCircleIcon>
+                  {showInfo && (
+                    <InfoModal
+                      title="ข้อมูลชนิดกล่องวิชาในแต่ละหมวดหมู่"
+                      imageUrl="/imgs/Subjectbox_Details.svg"
+                      imageAlt="Subject Box Details"
+                      onClose={() => setShowInfo(false)}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="overflow-x-auto overflow-y-hidden hover:overflow-x-scroll overscroll-x-contain border-x border-gray-100 rounded-t-2xl rounded-br-2xl w-full">
+                <div className="flex w-full overflow-x-auto">
+                  {curriculumData &&
+                    groupedEnrolls &&
+                    Object.keys(groupedEnrolls).map((year) => (
+                      <div className="flex-shrink-0 w-max">
+                        <div
+                          className={`bg-white rounded-tl-[20px] rounded-tr-[20px] py-2 border border-solid border-b-0 border-gray-200`}
+                        >
+                          <h2 className="text-center cursor-default">
+                            {" "}
+                            {numberToOrdinal(toInteger(year))} Year
+                          </h2>
+                        </div>
 
-                      <div
-                        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${
-                          Object.keys(groupedEnrolls[year]).length > 2
-                            ? "3"
-                            : "2"
-                        } xl:grid-cols-${
-                          Object.keys(groupedEnrolls[year]).length > 2
-                            ? "3"
-                            : "2"
-                        } gap-0 border border-solid border-x-1 border-y-0 border-gray-200`}
-                      >
-                        {Object.keys(groupedEnrolls[year]).map((semester) => (
-                          <div>
-                            <p
-                              className={`text-center text-[10px] text-blue-shadeb6 w-30 
+                        <div
+                          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${
+                            Object.keys(groupedEnrolls[year]).length > 2
+                              ? "3"
+                              : "2"
+                          } xl:grid-cols-${
+                            Object.keys(groupedEnrolls[year]).length > 2
+                              ? "3"
+                              : "2"
+                          } gap-0 border border-solid border-x-1 border-y-0 border-gray-200`}
+                        >
+                          {Object.keys(groupedEnrolls[year]).map((semester) => (
+                            <div>
+                              <p
+                                className={`text-center text-[10px] text-blue-shadeb6 w-30 
                                     px-7 py-0.5 bg-blue-shadeb05 rounded-tl-2xl rounded-tr-2xl cursor-default`}
-                            >
-                              {semester === "3"
-                                ? "Summer"
-                                : `${numberToSemester(
-                                    toInteger(semester)
-                                  )} Semester`}
-                            </p>
-                            {(() => {
-                              const coursesByGroup: {
-                                generalEducation: Course[];
-                                majorRequirements: Course[];
-                                freeElective: Course[];
-                              } = {
-                                generalEducation: [],
-                                majorRequirements: [],
-                                freeElective: [],
-                              };
+                              >
+                                {semester === "3"
+                                  ? "Summer"
+                                  : `${numberToSemester(
+                                      toInteger(semester)
+                                    )} Semester`}
+                              </p>
+                              {(() => {
+                                const coursesByGroup: {
+                                  generalEducation: Course[];
+                                  majorRequirements: Course[];
+                                  freeElective: Course[];
+                                } = {
+                                  generalEducation: [],
+                                  majorRequirements: [],
+                                  freeElective: [],
+                                };
 
-                              // Classify courses into their respective groups
-                              const sortedGroups = Object.keys(
-                                groupedEnrolls[year][semester]
-                              ).sort((a, b) => {
-                                const groupA = findCourseTitle(
-                                  groupedEnrolls[year][semester][toInteger(a)]
-                                    .courseNo
-                                ).groupName;
-                                const groupB = findCourseTitle(
-                                  groupedEnrolls[year][semester][toInteger(b)]
-                                    .courseNo
-                                ).groupName;
-                                return (
-                                  groupOrder.indexOf(groupA) -
-                                  groupOrder.indexOf(groupB)
-                                );
-                              });
+                                // Classify courses into their respective groups
+                                const sortedGroups = Object.keys(
+                                  groupedEnrolls[year][semester]
+                                ).sort((a, b) => {
+                                  const groupA = findCourseTitle(
+                                    groupedEnrolls[year][semester][toInteger(a)]
+                                      .courseNo
+                                  ).groupName;
+                                  const groupB = findCourseTitle(
+                                    groupedEnrolls[year][semester][toInteger(b)]
+                                      .courseNo
+                                  ).groupName;
+                                  return (
+                                    groupOrder.indexOf(groupA) -
+                                    groupOrder.indexOf(groupB)
+                                  );
+                                });
 
-                              let totalCredits = 0;
+                                let totalCredits = 0;
 
-                              sortedGroups.forEach((group) => {
-                                const course =
-                                  groupedEnrolls[year][semester][
-                                    toInteger(group)
-                                  ];
-                                const { groupName } = findCourseTitle(
-                                  course.courseNo
-                                );
-                                totalCredits += Math.floor(
-                                  toInteger(course.credit)
-                                );
+                                sortedGroups.forEach((group) => {
+                                  const course =
+                                    groupedEnrolls[year][semester][
+                                      toInteger(group)
+                                    ];
+                                  const { groupName } = findCourseTitle(
+                                    course.courseNo
+                                  );
+                                  totalCredits += Math.floor(
+                                    toInteger(course.credit)
+                                  );
 
-                                switch (groupName) {
-                                  case "Learner Person":
-                                  case "Co-Creator":
-                                  case "Active Citizen":
-                                  case "Elective":
-                                    coursesByGroup.generalEducation.push(
-                                      course
-                                    );
-                                    break;
-                                  case "Core":
-                                  case "Major Required":
-                                  case "Major Elective":
-                                    coursesByGroup.majorRequirements.push(
-                                      course
-                                    );
-                                    break;
-                                  default:
-                                    coursesByGroup.freeElective.push(course);
-                                }
-                              });
-
-                              const renderCourse = (course: Course) => {
-                                const { courseTitleEng, groupName } =
-                                  findCourseTitle(course.courseNo);
-                                if (
-                                  course.grade !== "F" &&
-                                  course.grade !== "W"
-                                ) {
-                                  let content;
                                   switch (groupName) {
                                     case "Learner Person":
-                                      content = (
-                                        <LearnerEnrollBox
-                                          courseNo={course.courseNo}
-                                          courseTitleEng={truncateTitle(
-                                            courseTitleEng || ""
-                                          )}
-                                          courseCredit={Math.floor(
-                                            course.credit
-                                          )}
-                                          courseFullName={courseTitleEng || ""}
-                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                        />
-                                      );
-                                      break;
                                     case "Co-Creator":
-                                      content = (
-                                        <CoCreEnrollBox
-                                          courseNo={course.courseNo}
-                                          courseTitleEng={truncateTitle(
-                                            courseTitleEng || ""
-                                          )}
-                                          courseCredit={Math.floor(
-                                            course.credit
-                                          )}
-                                          courseFullName={courseTitleEng || ""}
-                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                        />
-                                      );
-                                      break;
                                     case "Active Citizen":
-                                      content = (
-                                        <ActEnrollBox
-                                          courseNo={course.courseNo}
-                                          courseTitleEng={truncateTitle(
-                                            courseTitleEng || ""
-                                          )}
-                                          courseCredit={Math.floor(
-                                            course.credit
-                                          )}
-                                          courseFullName={courseTitleEng || ""}
-                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                        />
-                                      );
-                                      break;
                                     case "Elective":
-                                      content = (
-                                        <GEElecEnrollBox
-                                          courseNo={course.courseNo}
-                                          courseTitleEng={truncateTitle(
-                                            courseTitleEng || ""
-                                          )}
-                                          courseCredit={Math.floor(
-                                            course.credit
-                                          )}
-                                          courseFullName={courseTitleEng || ""}
-                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                        />
+                                      coursesByGroup.generalEducation.push(
+                                        course
                                       );
                                       break;
                                     case "Core":
-                                      content = (
-                                        <CoreEnrollBox
-                                          courseNo={course.courseNo}
-                                          courseTitleEng={truncateTitle(
-                                            courseTitleEng || ""
-                                          )}
-                                          courseCredit={Math.floor(
-                                            course.credit
-                                          )}
-                                          courseFullName={courseTitleEng || ""}
-                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                        />
-                                      );
-                                      break;
                                     case "Major Required":
-                                      content = (
-                                        <MajorEnrollBox
-                                          courseNo={course.courseNo}
-                                          courseTitleEng={truncateTitle(
-                                            courseTitleEng || ""
-                                          )}
-                                          courseCredit={Math.floor(
-                                            course.credit
-                                          )}
-                                          courseFullName={courseTitleEng || ""}
-                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                        />
-                                      );
-                                      break;
                                     case "Major Elective":
-                                      content = (
-                                        <MajorEnrollBox
-                                          courseNo={course.courseNo}
-                                          courseTitleEng={truncateTitle(
-                                            courseTitleEng || ""
-                                          )}
-                                          courseCredit={Math.floor(
-                                            course.credit
-                                          )}
-                                          courseFullName={courseTitleEng || ""}
-                                          courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                        />
+                                      coursesByGroup.majorRequirements.push(
+                                        course
                                       );
                                       break;
                                     default:
-                                      content = (
-                                        <FreeEnrollBox
+                                      coursesByGroup.freeElective.push(course);
+                                  }
+                                });
+
+                                const renderCourse = (course: Course) => {
+                                  const { courseTitleEng, groupName } =
+                                    findCourseTitle(course.courseNo);
+                                  if (
+                                    course.grade !== "F" &&
+                                    course.grade !== "W"
+                                  ) {
+                                    let content;
+                                    switch (groupName) {
+                                      case "Learner Person":
+                                        content = (
+                                          <LearnerEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseTitleEng={truncateTitle(
+                                              courseTitleEng || ""
+                                            )}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                        break;
+                                      case "Co-Creator":
+                                        content = (
+                                          <CoCreEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseTitleEng={truncateTitle(
+                                              courseTitleEng || ""
+                                            )}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                        break;
+                                      case "Active Citizen":
+                                        content = (
+                                          <ActEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseTitleEng={truncateTitle(
+                                              courseTitleEng || ""
+                                            )}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                        break;
+                                      case "Elective":
+                                        content = (
+                                          <GEElecEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseTitleEng={truncateTitle(
+                                              courseTitleEng || ""
+                                            )}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                        break;
+                                      case "Core":
+                                        content = (
+                                          <CoreEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseTitleEng={truncateTitle(
+                                              courseTitleEng || ""
+                                            )}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                        break;
+                                      case "Major Required":
+                                        content = (
+                                          <MajorEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseTitleEng={truncateTitle(
+                                              courseTitleEng || ""
+                                            )}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                        break;
+                                      case "Major Elective":
+                                        content = (
+                                          <MajorEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseTitleEng={truncateTitle(
+                                              courseTitleEng || ""
+                                            )}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                        break;
+                                      default:
+                                        content = (
+                                          <FreeEnrollBox
+                                            courseNo={course.courseNo}
+                                            courseCredit={Math.floor(
+                                              course.credit
+                                            )}
+                                            courseTitleEng={""}
+                                            courseFullName={
+                                              courseTitleEng || ""
+                                            }
+                                            courseRecommendedYear={findCourseRecommendYearForCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCategory={groupName}
+                                            coursePrerequisites={findPreReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                            courseCorequisite={findCoReqFromCurriculumData(
+                                              course.courseNo
+                                            )}
+                                          />
+                                        );
+                                    }
+                                    return (
+                                      <div
+                                        key={course.courseNo}
+                                        className="flex flex-col items-center justify-center my-1.5"
+                                      >
+                                        {content}
+                                      </div>
+                                    );
+                                  } else {
+                                    return (
+                                      <div
+                                        key={course.courseNo}
+                                        className="flex flex-col items-center justify-center my-1.5"
+                                      >
+                                        <UncountBox
                                           courseNo={course.courseNo}
+                                          courseTitleEng={truncateTitle(
+                                            courseTitleEng || ""
+                                          )}
                                           courseCredit={Math.floor(
                                             course.credit
                                           )}
-                                          courseTitleEng={""}
-                                          courseFullName={courseTitleEng || ""}
+                                          courseFullName={
+                                            courseTitleEng || "Not found"
+                                          }
+                                          courseCategory={
+                                            groupName || "Not found"
+                                          }
                                           courseRecommendedYear={findCourseRecommendYearForCurriculumData(
                                             course.courseNo
                                           )}
-                                          courseCategory={groupName}
-                                          coursePrerequisites={findPreReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
-                                          courseCorequisite={findCoReqFromCurriculumData(
-                                            course.courseNo
-                                          )}
                                         />
-                                      );
+                                      </div>
+                                    );
                                   }
-                                  return (
-                                    <div
-                                      key={course.courseNo}
-                                      className="flex flex-col items-center justify-center my-1.5"
-                                    >
-                                      {content}
+                                };
+
+                                const renderPlaceholder = () => (
+                                  <div className="flex flex-col items-center justify-center my-1.5">
+                                    <BlankBox
+                                      courseNo={""}
+                                      courseTitleEng={""}
+                                      courseCredit={0}
+                                    />
+                                  </div>
+                                );
+
+                                // Render all courses grouped by category and draw lines between groups
+                                return (
+                                  <div
+                                    className={`border border-solid ${
+                                      semester === "1"
+                                        ? "border-r-1 border-l-0"
+                                        : "border-x-0"
+                                    } border-y-0 border-gray-200 pt-[10px]`}
+                                  >
+                                    <div className="flex flex-col items-center justify-center">
+                                      {coursesByGroup.generalEducation.map(
+                                        renderCourse
+                                      )}
+                                      {remainCoursesByGroup.generalEducation
+                                        .filter(
+                                          (course: Course) =>
+                                            course.recommendYear?.toString() ===
+                                              year &&
+                                            course.recommendSemester?.toString() ===
+                                              semester
+                                        )
+                                        .map(renderRemainCourse)}
+                                      {Array.from({
+                                        length:
+                                          maxGeneralEducationCourses -
+                                          coursesByGroup.generalEducation
+                                            .length -
+                                          remainCoursesByGroup.generalEducation.filter(
+                                            (course: Course) =>
+                                              course.recommendYear?.toString() ===
+                                                year &&
+                                              course.recommendSemester?.toString() ===
+                                                semester
+                                          ).length,
+                                      }).map(() => renderPlaceholder())}
                                     </div>
-                                  );
-                                } else {
-                                  return (
-                                    <div
-                                      key={course.courseNo}
-                                      className="flex flex-col items-center justify-center my-1.5"
-                                    >
-                                      <UncountBox
-                                        courseNo={course.courseNo}
-                                        courseTitleEng={truncateTitle(
-                                          courseTitleEng || ""
-                                        )}
-                                        courseCredit={Math.floor(course.credit)}
-                                        courseFullName={
-                                          courseTitleEng || "Not found"
-                                        }
-                                        courseCategory={
-                                          groupName || "Not found"
-                                        }
-                                        courseRecommendedYear={findCourseRecommendYearForCurriculumData(
-                                          course.courseNo
-                                        )}
-                                      />
+
+                                    <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
+                                    {/* Line between groups */}
+                                    <div className="flex flex-col items-center justify-center">
+                                      {coursesByGroup.majorRequirements.map(
+                                        renderCourse
+                                      )}
+                                      {remainCoursesByGroup.majorRequirements
+                                        .filter(
+                                          (course: Course) =>
+                                            course.recommendYear?.toString() ===
+                                              year &&
+                                            course.recommendSemester?.toString() ===
+                                              semester
+                                        )
+                                        .map(renderRemainCourse)}
+                                      {Array.from({
+                                        length:
+                                          maxMajorRequirementCourses -
+                                          coursesByGroup.majorRequirements
+                                            .length -
+                                          remainCoursesByGroup.majorRequirements.filter(
+                                            (course: Course) =>
+                                              course.recommendYear?.toString() ===
+                                                year &&
+                                              course.recommendSemester?.toString() ===
+                                                semester
+                                          ).length,
+                                      }).map(() => renderPlaceholder())}
                                     </div>
-                                  );
-                                }
-                              };
-
-                              const renderPlaceholder = () => (
-                                <div className="flex flex-col items-center justify-center my-1.5">
-                                  <BlankBox
-                                    courseNo={""}
-                                    courseTitleEng={""}
-                                    courseCredit={0}
-                                  />
-                                </div>
-                              );
-
-                              // Render all courses grouped by category and draw lines between groups
-                              return (
-                                <div
-                                  className={`border border-solid ${
-                                    semester === "1"
-                                      ? "border-r-1 border-l-0"
-                                      : "border-x-0"
-                                  } border-y-0 border-gray-200 pt-[10px]`}
-                                >
-                                  <div className="flex flex-col items-center justify-center">
-                                    {coursesByGroup.generalEducation.map(
-                                      renderCourse
-                                    )}
-                                    {remainCoursesByGroup.generalEducation
-                                      .filter(
-                                        (course: Course) =>
-                                          course.recommendYear?.toString() ===
-                                            year &&
-                                          course.recommendSemester?.toString() ===
-                                            semester
-                                      )
-                                      .map(renderRemainCourse)}
-                                    {Array.from({
-                                      length:
-                                        maxGeneralEducationCourses -
-                                        coursesByGroup.generalEducation.length -
-                                        remainCoursesByGroup.generalEducation.filter(
+                                    <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
+                                    {/* Line between groups */}
+                                    <div className="flex flex-col items-center justify-center">
+                                      {coursesByGroup.freeElective.map(
+                                        renderCourse
+                                      )}
+                                      {remainCoursesByGroup.freeElective
+                                        .filter(
                                           (course: Course) =>
-                                            course.recommendYear?.toString() ===
+                                            course.recommendYear.toString() ===
                                               year &&
-                                            course.recommendSemester?.toString() ===
+                                            course.recommendSemester.toString() ===
                                               semester
-                                        ).length,
-                                    }).map(() => renderPlaceholder())}
+                                        )
+                                        .map(renderRemainCourse)}
+                                      {Array.from({
+                                        length:
+                                          maxFreeElectiveCourses -
+                                          coursesByGroup.freeElective.length -
+                                          remainCoursesByGroup.freeElective.filter(
+                                            (course: Course) =>
+                                              course.recommendYear?.toString() ===
+                                                year &&
+                                              course.recommendSemester?.toString() ===
+                                                semester
+                                          ).length,
+                                      }).map(() => renderPlaceholder())}
+                                    </div>
+                                    <div className="flex flex-col items-center justify-center mt-4 w-full bg-blue-shadeb05 pt-1.5 pb-1.5">
+                                      {totalCredits > 0 ? (
+                                        <CreditBox
+                                          courseCredit={totalCredits}
+                                          courseNo={""}
+                                          courseTitleEng={""}
+                                        />
+                                      ) : (
+                                        <PendingCreditBox
+                                          courseCredit={totalCredits}
+                                          courseNo={""}
+                                          courseTitleEng={""}
+                                        />
+                                      )}
+                                    </div>
                                   </div>
-
-                                  <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
-                                  {/* Line between groups */}
-                                  <div className="flex flex-col items-center justify-center">
-                                    {coursesByGroup.majorRequirements.map(
-                                      renderCourse
-                                    )}
-                                    {remainCoursesByGroup.majorRequirements
-                                      .filter(
-                                        (course: Course) =>
-                                          course.recommendYear?.toString() ===
-                                            year &&
-                                          course.recommendSemester?.toString() ===
-                                            semester
-                                      )
-                                      .map(renderRemainCourse)}
-                                    {Array.from({
-                                      length:
-                                        maxMajorRequirementCourses -
-                                        coursesByGroup.majorRequirements
-                                          .length -
-                                        remainCoursesByGroup.majorRequirements.filter(
-                                          (course: Course) =>
-                                            course.recommendYear?.toString() ===
-                                              year &&
-                                            course.recommendSemester?.toString() ===
-                                              semester
-                                        ).length,
-                                    }).map(() => renderPlaceholder())}
-                                  </div>
-                                  <div className="border border-dashed w-full my-4 border-y-1 border-blue-shadeb2"></div>
-                                  {/* Line between groups */}
-                                  <div className="flex flex-col items-center justify-center">
-                                    {coursesByGroup.freeElective.map(
-                                      renderCourse
-                                    )}
-                                    {remainCoursesByGroup.freeElective
-                                      .filter(
-                                        (course: Course) =>
-                                          course.recommendYear.toString() ===
-                                            year &&
-                                          course.recommendSemester.toString() ===
-                                            semester
-                                      )
-                                      .map(renderRemainCourse)}
-                                    {Array.from({
-                                      length:
-                                        maxFreeElectiveCourses -
-                                        coursesByGroup.freeElective.length -
-                                        remainCoursesByGroup.freeElective.filter(
-                                          (course: Course) =>
-                                            course.recommendYear?.toString() ===
-                                              year &&
-                                            course.recommendSemester?.toString() ===
-                                              semester
-                                        ).length,
-                                    }).map(() => renderPlaceholder())}
-                                  </div>
-                                  <div className="flex flex-col items-center justify-center mt-4 w-full bg-blue-shadeb05 pt-1.5 pb-1.5">
-                                    {totalCredits > 0 ? (
-                                      <CreditBox
-                                        courseCredit={totalCredits}
-                                        courseNo={""}
-                                        courseTitleEng={""}
-                                      />
-                                    ) : (
-                                      <PendingCreditBox
-                                        courseCredit={totalCredits}
-                                        courseNo={""}
-                                        courseTitleEng={""}
-                                      />
-                                    )}
-                                  </div>
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        ))}
+                                );
+                              })()}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
             </div>
           </div>
-        </MainContainer>
+        </ContainerWithoutHeader>
 
         <SmContainer>
           <div className="mb-6">

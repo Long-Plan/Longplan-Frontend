@@ -1,8 +1,6 @@
 import { CheckBadgeIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
 import { MainContainer } from "../Container/MainContainer";
-import MajorEnrollBox from "../EnrollSubject/MajorEnroll";
 import { MajorElecBox } from "../ElecSubject/ElecBoxGroup";
-import ElecBoxs from "../ElecSubject/ElecBox";
 import ElecBoxIsolate from "../ElecSubject/ElecBoxIsolate";
 
 export function PlanDiagram() {

@@ -21,9 +21,9 @@ function Home() {
       {/* <StudentCheckPage /> */}
       <EnrollAndCredits />
       {/* <CheckPage /> */}
-      <div className={`flex justify-center`}>
+      {/* <div className={`flex justify-center`}>
         <CurriculumBox />
-      </div>
+      </div> */}
       {/* <FeedBack /> */}
       {/* <CourseTitleExtractor /> */}
     </PageContainer>
