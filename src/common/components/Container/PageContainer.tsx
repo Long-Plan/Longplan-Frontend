@@ -7,7 +7,7 @@ export const PageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem; /* Responsive padding */
+  // padding: 2rem; /* Responsive padding */
   font-family: "IBM Plex Sans Thai", sans-serif;
   background-color: #f5f5f5;
 

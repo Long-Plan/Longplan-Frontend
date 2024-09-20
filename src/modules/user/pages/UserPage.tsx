@@ -7,6 +7,7 @@ import { Course } from "utils/BoxUtils";
 import { toNumber } from "lodash-es";
 import { Nullable } from "tsdef";
 import { PageContainer } from "common/components/Container/PageContainer.tsx";
+import ContainerWithBack from "common/components/Container/BackContainer.tsx";
 
 type EnrolledCoursesData = {
   studentID: string;
@@ -561,16 +562,16 @@ function UserPage() {
 
   return (
     <PageContainer className="flex flex-col w-screen items-center">
-      <div className="pl-12 mt-12 justify-center items-center">
+      <ContainerWithBack title={"User Information"}>
         <div className="flex bg-[#ECEEFA] rounded-t-2xl shadow-2xl items-center justify-center bg-cover bg-bottom bg-[url('/imgs/ClockBG.svg')]">
           <div className="flex flex-row items-center">
             <GeneralData user={userData} year={year} semester={semester} />
           </div>
         </div>
-        <div className="bg-white rounded-b-2xl shadow-lg pb-16 px-12">
+        <div className="bg-white rounded-b-2xl shadow-lg pb-32 px-12 h-[600px]">
           <EnrollData />
         </div>
-      </div>
+      </ContainerWithBack>
     </PageContainer>
   );
 }

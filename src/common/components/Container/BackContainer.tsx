@@ -12,7 +12,7 @@ function ContainerWithBack({ title, children, back }: Props) {
   const navigate = useNavigate();
   return (
     <>
-      <div className="bg-white rounded-xl shadow-md mb-4 w-[1100px] m-4">
+      <div className="rounded-xl mb-4 m-4">
         <div className="drop-shadow-md bg-gray-50 px-6 py-4 rounded-t-xl flex items-center gap-6">
           <BackwardIcon
             color="#AE0218"

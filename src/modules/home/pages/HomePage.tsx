@@ -24,7 +24,7 @@ function Home() {
       {/* <div className={`flex justify-center`}>
         <CurriculumBox />
       </div> */}
-      {/* <FeedBack /> */}
+      <FeedBack />
       {/* <CourseTitleExtractor /> */}
     </PageContainer>
   );
