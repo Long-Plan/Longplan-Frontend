@@ -13,6 +13,12 @@ interface EnrollmentApiResponse {
   result: EnrollmentData[];
 }
 
+interface CoursesApiResponse {
+  success: boolean;
+  message: string;
+  result: Course[];
+}
+
 interface Result {
   id: number;
   name_th: string;
@@ -26,7 +32,6 @@ interface Result {
   requirements: Requirement[] | null;
   relationships: Relationship[] | null;
   child_categories: ChildCategory[] | null;
-  courses: Course[] | null;
 }
 
 interface EnrollmentData {
@@ -68,11 +73,12 @@ interface ChildCategory {
   requirements: Requirement[] | null;
   relationships: Relationship[] | null;
   child_categories: ChildCategory[] | null;
-  courses: Course[] | null;
+  courses: string[] | null; // Updated to hold course_no strings from curriculumData API
 }
 
 interface Course {
   id: number;
+  category_id: number;
   course_no: string;
   semester?: number;
   years?: number;
@@ -118,6 +124,7 @@ const CategoryDetail: React.FC = () => {
   const [enrollmentData, setEnrollmentData] = useState<EnrollmentData[] | null>(
     null
   );
+  const [coursesData, setCoursesData] = useState<Course[] | null>(null);
   const [typesData, setTypesData] = useState<Type[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -146,6 +153,16 @@ const CategoryDetail: React.FC = () => {
         const enrollmentData: EnrollmentApiResponse =
           await enrollmentResponse.json();
         setEnrollmentData(enrollmentData.result);
+
+        // Fetch course data
+        const coursesResponse = await fetch(
+          "http://10.10.182.135:8000/api/v1/curricula/courses/1"
+        );
+        if (!coursesResponse.ok) {
+          throw new Error("Failed to fetch course data");
+        }
+        const coursesData: CoursesApiResponse = await coursesResponse.json();
+        setCoursesData(coursesData.result);
 
         // Fetch types data
         const typesResponse = await fetch(
@@ -179,6 +196,12 @@ const CategoryDetail: React.FC = () => {
     return null;
   };
 
+  const getCourseDetails = (courseNo: string) => {
+    if (!coursesData) return null;
+
+    return coursesData.find((course) => course.course_no === courseNo) || null;
+  };
+
   // Helper function to get the name of a category type by its `type_id`
   const getTypeNameById = (typeId: number): string => {
     const type = typesData?.find((t) => t.id === typeId);
@@ -193,9 +216,10 @@ const CategoryDetail: React.FC = () => {
 
     // Calculate the total credits for the current category's courses
     const courseCredits = category.courses
-      ? category.courses.reduce((sum, course) => {
-          const enrolled = getEnrollmentDetails(course.course_no);
-          return enrolled ? sum + course.credit : sum;
+      ? category.courses.reduce((sum, courseNo) => {
+          const enrolled = getEnrollmentDetails(courseNo);
+          const courseDetails = getCourseDetails(courseNo);
+          return enrolled && courseDetails ? sum + courseDetails.credit : sum;
         }, 0)
       : 0;
 
@@ -210,22 +234,32 @@ const CategoryDetail: React.FC = () => {
     return courseCredits + childCredits;
   };
 
-  const renderCourses = (courses: Course[] | null) => {
+  const renderCourses = (courses: string[] | null) => {
     if (!courses || courses.length === 0) return null;
 
     return (
       <ul>
-        {courses.map((course) => {
-          const enrollment = getEnrollmentDetails(course.course_no);
-          if (enrollment) {
+        {courses.map((courseNo) => {
+          const enrollment = getEnrollmentDetails(courseNo);
+          const courseDetails = getCourseDetails(courseNo);
+
+          if (enrollment && courseDetails) {
             return (
-              <li key={course.id} className="ml-8">
-                {course.detail.title_long_en} - {course.credit} Credits - Grade:{" "}
-                {enrollment.Grade}
+              <li key={courseDetails.id} className="ml-8">
+                {courseDetails.detail.title_long_en} - {courseDetails.credit}{" "}
+                Credits
+                <br />
+                <strong>Grade: {enrollment.Grade}</strong>
+                <br />
+                {/* Display prerequisite if it exists */}
+                <strong>Prerequisite: </strong>{" "}
+                {courseDetails.detail.prerequisite !== "None"
+                  ? courseDetails.detail.prerequisite
+                  : "No prerequisites"}
               </li>
             );
           }
-          return null; // Only render if enrolled
+          return null; // Only render if enrolled and course details exist
         })}
       </ul>
     );
