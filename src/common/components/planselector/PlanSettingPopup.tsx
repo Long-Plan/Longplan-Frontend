@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { Listbox, Transition } from "@headlessui/react";
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { useNavigate } from "react-router-dom"; // Import useNavigate from React Router
-
-// mock data for branches as it's optional
-const branches = ["-"];
+import { useNavigate } from "react-router-dom";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -18,16 +21,28 @@ export default function PlanSettingPopup({
   mode: boolean;
 }) {
   const [majors, setMajors] = useState<{ id: number; name_en: string }[]>([]);
-  const [programs, setPrograms] = useState<string[]>([]);
-  const [plans, setPlans] = useState<string[]>([]);
+  const [programs, setPrograms] = useState<
+    { id: number; name_th: string; major_id: number }[]
+  >([]);
+  const [choices, setChoices] = useState<
+    {
+      id: number;
+      name_en: string;
+      choices: { id: number; name_en: string }[];
+    }[]
+  >([]);
 
   const [selectedMajor, setSelectedMajor] = useState<{
     id: number;
     name_en: string;
   } | null>(null);
-  const [selectedProgram, setSelectedProgram] = useState<string>(""); // Define state for selectedProgram
-  const [selectedBranch, setSelectedBranch] = useState(branches[0]);
-  const [selectedPlan, setSelectedPlan] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState<{
+    id: number;
+    name_th: string;
+  } | null>(null);
+  const [selectedChoices, setSelectedChoices] = useState<{
+    [key: number]: string;
+  }>({});
 
   const navigate = useNavigate(); // Get navigate function from useNavigate hook
 
@@ -38,7 +53,6 @@ export default function PlanSettingPopup({
         const response = await fetch("http://10.10.182.135:8000/api/v1/majors");
         const data = await response.json();
         if (data.success) {
-          // Extract major names and IDs
           setMajors(
             data.result.map((major: any) => ({
               id: major.id,
@@ -65,22 +79,38 @@ export default function PlanSettingPopup({
           );
           const data = await response.json();
           if (data.success) {
-            const programName = data.result[0].name_th; // First program
-            const planChoices =
-              data.result[0].curriculum_questions[0].choices.map(
-                (choice: any) => choice.name_en
-              );
-            setPrograms([programName]);
-            setPlans(planChoices);
-            setSelectedProgram(programName); // Update the selectedProgram state
-            setSelectedPlan(planChoices[0]);
+            const fetchedPrograms = data.result.map((program: any) => ({
+              id: program.id, // Program ID
+              name_th: program.name_th,
+              major_id: program.major_id,
+            }));
+            const curriculumQuestions = data.result[0].curriculum_questions.map(
+              (question: any) => ({
+                id: question.id,
+                name_en: question.name_en,
+                choices: question.choices.map((choice: any) => ({
+                  id: choice.id,
+                  name_en: choice.name_en,
+                })),
+              })
+            );
+            setPrograms(fetchedPrograms);
+            setChoices(curriculumQuestions);
+
+            // Initialize selected choices with first choice for each question
+            const initialSelectedChoices: { [key: number]: string } = {};
+            curriculumQuestions.forEach((question: any) => {
+              initialSelectedChoices[question.id] = question.choices[0].name_en;
+            });
+            setSelectedChoices(initialSelectedChoices);
+            setSelectedProgram(fetchedPrograms[0]); // Set the first program as default
           }
         } catch (error) {
           console.error("Error fetching curriculum:", error);
           setPrograms([]);
-          setPlans([]);
-          setSelectedProgram("-");
-          setSelectedPlan("-");
+          setChoices([]);
+          setSelectedProgram(null);
+          setSelectedChoices({});
         }
       };
 
@@ -89,14 +119,25 @@ export default function PlanSettingPopup({
   }, [selectedMajor]);
 
   const handleSubmit = () => {
+    if (!selectedMajor || !selectedProgram) {
+      console.error("Major or program is not selected properly.");
+      return;
+    }
+
+    // Construct the formData with selected IDs
     const formData = {
-      major: selectedMajor?.name_en,
-      program: selectedProgram,
-      branch: selectedBranch,
-      plan: selectedPlan,
+      majorId: selectedMajor.id, // ID of the selected major
+      programId: selectedProgram.id, // ID of the selected program
+      choices: choices.map((question) => ({
+        questionId: question.id, // Question ID
+        choiceId: question.choices.find(
+          (choice) => choice.name_en === selectedChoices[question.id]
+        )?.id, // Find the choice ID based on selected choice
+      })),
     };
 
     console.log("Form submitted with data:", formData);
+
     if (mode) {
       onClose();
     } else {
@@ -126,7 +167,7 @@ export default function PlanSettingPopup({
             <label className="block text-sm font-medium">ภาควิชา</label>
             <Listbox value={selectedMajor} onChange={setSelectedMajor}>
               <div className="relative mt-1">
-                <Listbox.Button className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                <ListboxButton className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                   <span className="block truncate">
                     {selectedMajor ? selectedMajor.name_en : "Select a Major"}
                   </span>
@@ -136,15 +177,15 @@ export default function PlanSettingPopup({
                       aria-hidden="true"
                     />
                   </span>
-                </Listbox.Button>
+                </ListboxButton>
                 <Transition
                   leave="transition ease-in duration-100"
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
+                  <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
                     {majors.map((major) => (
-                      <Listbox.Option
+                      <ListboxOption
                         key={major.id}
                         className={({ active }) =>
                           classNames(
@@ -176,38 +217,41 @@ export default function PlanSettingPopup({
                             ) : null}
                           </>
                         )}
-                      </Listbox.Option>
+                      </ListboxOption>
                     ))}
-                  </Listbox.Options>
+                  </ListboxOptions>
                 </Transition>
               </div>
             </Listbox>
           </div>
 
           {/* Program Dropdown */}
-
           <div>
             <label className="block text-sm font-medium">หลักสูตร</label>
             <Listbox value={selectedProgram} onChange={setSelectedProgram}>
               <div className="relative mt-1">
-                <Listbox.Button className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                  <span className="block truncate">{selectedProgram}</span>
+                <ListboxButton className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                  <span className="block truncate">
+                    {selectedProgram
+                      ? selectedProgram.name_th
+                      : "Select a Program"}
+                  </span>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                     <ChevronUpDownIcon
                       className="h-5 w-5 text-blue-shadeb5"
                       aria-hidden="true"
                     />
                   </span>
-                </Listbox.Button>
+                </ListboxButton>
                 <Transition
                   leave="transition ease-in duration-100"
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
-                    {programs.map((program, idx) => (
-                      <Listbox.Option
-                        key={idx}
+                  <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
+                    {programs.map((program) => (
+                      <ListboxOption
+                        key={program.id}
                         className={({ active }) =>
                           classNames(
                             active
@@ -226,7 +270,7 @@ export default function PlanSettingPopup({
                                 "block truncate"
                               )}
                             >
-                              {program}
+                              {program.name_th}
                             </span>
                             {selected ? (
                               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -238,38 +282,50 @@ export default function PlanSettingPopup({
                             ) : null}
                           </>
                         )}
-                      </Listbox.Option>
+                      </ListboxOption>
                     ))}
-                  </Listbox.Options>
+                  </ListboxOptions>
                 </Transition>
               </div>
             </Listbox>
           </div>
 
-          {/* Branch Dropdown (Optional) */}
-          {branches.length < 1 && (
-            <div>
-              <label className="block text-sm font-medium">สาย</label>
-              <Listbox value={selectedBranch} onChange={setSelectedBranch}>
+          {/* Dynamic Choice Dropdowns */}
+          {choices.map((question) => (
+            <div key={question.id}>
+              <label className="block text-sm font-medium">
+                {question.name_en}
+              </label>
+              <Listbox
+                value={selectedChoices[question.id]}
+                onChange={(choice: string) =>
+                  setSelectedChoices((prevChoices) => ({
+                    ...prevChoices,
+                    [question.id]: choice,
+                  }))
+                }
+              >
                 <div className="relative mt-1">
-                  <Listbox.Button className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                    <span className="block truncate">{selectedBranch}</span>
+                  <ListboxButton className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <span className="block truncate">
+                      {selectedChoices[question.id]}
+                    </span>
                     <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                       <ChevronUpDownIcon
                         className="h-5 w-5 text-blue-shadeb5"
                         aria-hidden="true"
                       />
                     </span>
-                  </Listbox.Button>
+                  </ListboxButton>
                   <Transition
                     leave="transition ease-in duration-100"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
-                      {branches.map((branch, idx) => (
-                        <Listbox.Option
-                          key={idx}
+                    <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
+                      {question.choices.map((choice) => (
+                        <ListboxOption
+                          key={choice.id}
                           className={({ active }) =>
                             classNames(
                               active
@@ -278,7 +334,7 @@ export default function PlanSettingPopup({
                               "relative cursor-default select-none py-2 pl-10 pr-4"
                             )
                           }
-                          value={branch}
+                          value={choice.name_en}
                         >
                           {({ selected }) => (
                             <>
@@ -288,7 +344,7 @@ export default function PlanSettingPopup({
                                   "block truncate"
                                 )}
                               >
-                                {branch}
+                                {choice.name_en}
                               </span>
                               {selected ? (
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -300,75 +356,14 @@ export default function PlanSettingPopup({
                               ) : null}
                             </>
                           )}
-                        </Listbox.Option>
+                        </ListboxOption>
                       ))}
-                    </Listbox.Options>
+                    </ListboxOptions>
                   </Transition>
                 </div>
               </Listbox>
             </div>
-          )}
-
-          {/* Plan Dropdown */}
-          <div>
-            <label className="block text-sm font-medium">แผน</label>
-            <Listbox value={selectedPlan} onChange={setSelectedPlan}>
-              <div className="relative mt-1">
-                <Listbox.Button className="bg-white relative w-full cursor-default rounded-[20px] border border-blue-shadeb5 py-2 pl-3 pr-10 text-left text-blue-shadeb5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                  <span className="block truncate">{selectedPlan}</span>
-                  <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <ChevronUpDownIcon
-                      className="h-5 w-5 text-blue-shadeb5"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </Listbox.Button>
-                <Transition
-                  leave="transition ease-in duration-100"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-[20px] bg-white py-1 text-base shadow-lg ring-1 ring-blue-shadeb5 ring-opacity-5 focus:outline-none">
-                    {plans.map((plan, idx) => (
-                      <Listbox.Option
-                        key={idx}
-                        className={({ active }) =>
-                          classNames(
-                            active
-                              ? "text-white bg-blue-shadeb5"
-                              : "text-gray-900",
-                            "relative cursor-default select-none py-2 pl-10 pr-4"
-                          )
-                        }
-                        value={plan}
-                      >
-                        {({ selected }) => (
-                          <>
-                            <span
-                              className={classNames(
-                                selected ? "font-medium" : "font-normal",
-                                "block truncate"
-                              )}
-                            >
-                              {plan}
-                            </span>
-                            {selected ? (
-                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <CheckIcon
-                                  className="h-5 w-5 text-blue-shadeb5"
-                                  aria-hidden="true"
-                                />
-                              </span>
-                            ) : null}
-                          </>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            </Listbox>
-          </div>
+          ))}
         </div>
 
         {/* Confirm Button */}
