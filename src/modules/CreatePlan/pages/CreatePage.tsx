@@ -7,7 +7,7 @@ function CreatePage() {
 
 	const [isSetting, setIsSetting] = useState(false);
 
-	const [plans, setPlans] = useState([
+	const [plans, setPlans] = useState<Plan[]>([
 		{
 			id: 1,
 			name: "Plan 1",
@@ -39,11 +39,19 @@ function CreatePage() {
 		{
 			id: 5,
 			name: "Plan 5",
-			course: "AME63",
+			course: "ME63",
 			edited: "17/07/24, 17:00",
 			isChoosing: false,
 		},
 	]);
+
+	type Plan = {
+		id: number;
+		name: string;
+		course: string;
+		edited: string;
+		isChoosing: boolean;
+	};
 
 	useEffect(() => {
 		loadingContext.done();
@@ -77,7 +85,7 @@ function CreatePage() {
 		setIsSetting(!isSetting);
 	};
 
-	const handleChoose = (planId) => {
+	const handleChoose = (planId: number) => {
 		if (isSetting) {
 			setPlans(
 				plans.map((plan) =>
@@ -90,7 +98,7 @@ function CreatePage() {
 		}
 	};
 
-	const handleDelete = (planId) => {
+	const handleDelete = (planId: number) => {
 		setPlans(plans.filter((plan) => plan.id !== planId));
 	};
 
@@ -132,16 +140,16 @@ function CreatePage() {
 					{plans.map((plan) => (
 						<div
 							key={plan.id}
-							className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0"
+							className="w-11/12 md:w-2/3 h-12 md:h-14 border hover:border-2 border-[#d9dcf4] hover:border-[#4351cc] bg-white hover:bg-gradient-to-r from-[#ecedf9] to-white rounded-full flex items-center px-5 flex-shrink-0 overflow-hidden"
 						>
-							<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold ">
+							<div className="w-1/2 text-[#4f5051] sm:text-base md:text-lg lg:text-xl xl:text-xl font-bold truncate">
 								{plan.name}
 							</div>
-							<div className="w-1/2 flex justify-between items-center">
+							<div className="w-1/2 flex justify-between items-center overflow-hidden">
 								<div className="text-[#4351cc] sm:text-xs md:text-sm lg:text-base xl:text-base font-bold">
 									{plan.course}
 								</div>
-								<div className="text-[#8a8b8c] sm:text-xs md:text-sm lg:text-base xl:text-base font-normal">
+								<div className="text-[#8a8b8c] sm:text-xs md:text-sm lg:text-base xl:text-base font-normal truncate">
 									Edited {plan.edited}
 								</div>
 								{plan.isChoosing ? (
@@ -150,7 +158,7 @@ function CreatePage() {
 									</div>
 								) : null}
 								{isSetting && (
-									<div className="flex gap-4">
+									<div className="flex gap-0 lg:gap-0.5 xl:gap-5">
 										{!plan.isChoosing && (
 											<div
 												onClick={() => handleChoose(plan.id)}
@@ -163,6 +171,7 @@ function CreatePage() {
 											src="/public/imgs/Delect.svg"
 											alt=""
 											onClick={() => handleDelete(plan.id)}
+											className="w-6 sm:w-7 md:w-7 lg:w-8 xl:w-8"
 										/>
 									</div>
 								)}
