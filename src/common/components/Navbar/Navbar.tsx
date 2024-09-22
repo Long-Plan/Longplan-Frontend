@@ -1,16 +1,16 @@
 import useGlobalStore from "common/contexts/StoreContext";
 import "./Navbar.css";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getLogout } from "common/apis/logout";
 import { ClientRouteKey, LocalStorageKey } from "common/constants/keys";
 import { UserIcon } from "@heroicons/react/20/solid";
 
 interface NavbarProps {
-  // Add any props you need, like navigation links
+  showExitPopup?: (nextPage: string) => void; // New prop to trigger the confirmation popup
 }
 
-const Navbar: React.FC<NavbarProps> = () => {
+const Navbar: React.FC<NavbarProps> = ({ showExitPopup }) => {
   const { setUserData } = useGlobalStore();
   const [activeRoute, setActiveRoute] = useState<string>("");
   const navigate = useNavigate();
@@ -27,6 +27,15 @@ const Navbar: React.FC<NavbarProps> = () => {
     setActiveRoute(location.pathname);
   }, [location.pathname]);
 
+  // Handle navigation, show exit popup only if on /plan
+  const handleNavClick = (nextPage: string) => {
+    if (showExitPopup && location.pathname === "/plan") {
+      showExitPopup(nextPage); // Trigger the popup when on the /plan page
+    } else {
+      navigate(nextPage); // Direct navigation if not on /plan
+    }
+  };
+
   // Helper function to render Nav Items
   const renderNavItem = (
     to: string,
@@ -35,14 +44,14 @@ const Navbar: React.FC<NavbarProps> = () => {
     label?: string
   ) => (
     <li className="nav-item flex flex-col justify-center items-center text-center">
-      <Link to={to} className="flex flex-col items-center justify-center">
+      <a onClick={() => handleNavClick(to)} className="cursor-pointer">
         <img
           src={activeRoute === to ? imgActiveSrc : imgSrc}
           alt={label || ""}
           className="transition-all duration-300 transform group hover:scale-125 hover:rotate-6 w-[50px] h-[50px]"
         />
         {label && <p className="text-[14px] mt-2">{label}</p>}
-      </Link>
+      </a>
     </li>
   );
 
@@ -67,15 +76,21 @@ const Navbar: React.FC<NavbarProps> = () => {
           "/imgs/Profile_p.svg",
           "Profile"
         )}
-        <li className="nav-item flex flex-col justify-center items-center text-center">
-          <Link
-            to="/settings"
-            className="flex flex-col items-center justify-center"
+        {renderNavItem(
+          "/settings",
+          "/imgs/Setting.svg",
+          "/imgs/Setting_p.svg",
+          "Setting"
+        )}
+        {/* <li className="nav-item flex flex-col justify-center items-center text-center">
+          <a
+            onClick={() => handleNavClick("/settings")}
+            className="cursor-pointer"
           >
             <UserIcon className="w-10 h-10 transition-all duration-300 transform group hover:scale-125 hover:rotate-6" />
             <p className="text-[14px] mt-2">Setting</p>
-          </Link>
-        </li>
+          </a>
+        </li> */}
         <li className="nav-bot mb-2 cursor-pointer flex flex-col justify-center items-center text-center">
           <button
             className="nav-link flex flex-col items-center justify-center"
