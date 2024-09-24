@@ -7,6 +7,8 @@ function CreatePage() {
 
 	const [isSetting, setIsSetting] = useState(false);
 
+	const [showPopup, setShowPopup] = useState(false);
+
 	const [plans, setPlans] = useState<Plan[]>([
 		{
 			id: 1,
@@ -61,17 +63,16 @@ function CreatePage() {
 		//new
 		const isAnyPlanChosen = plans.some((plan) => plan.isChoosing);
 
+		// if (isSetting && !isAnyPlanChosen) {
+		// 	alert("You must choose a plan before saving.");
+		// 	return;
+		// }
+
 		if (isSetting && !isAnyPlanChosen) {
-			alert("You must choose a plan before saving.");
+			setShowPopup(true); // Show custom popup
 			return;
 		}
 
-		// if (isSetting) {
-		// 	const sortedPlans = [...plans].sort(
-		// 		(a, b) => Number(b.isChoosing) - Number(a.isChoosing)
-		// 	);
-		// 	setPlans(sortedPlans);
-		// }
 		if (isSetting) {
 			const sortedPlans = [...plans].sort((a, b) => {
 				const choosingComparison = Number(b.isChoosing) - Number(a.isChoosing);
@@ -104,6 +105,28 @@ function CreatePage() {
 
 	return (
 		<div className="w-screen min-h-screen flex flex-col justify-center items-center">
+			{showPopup && (
+				<div className="fixed inset-0 flex items-center justify-center z-50">
+					<div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+						<div className="text-lg font-semibold text-[#323334]">
+							เลือกแพลน
+						</div>
+						<div className="mt-4 text-black">
+							โปรดเลือกแพลนที่ต้องการแสดงก่อนกดบันทึก
+						</div>
+						<div
+							onClick={() => setShowPopup(false)}
+							className="mt-6 px-4 py-2 bg-[#4351cc] text-white rounded-full"
+						>
+							ย้อนกลับ
+						</div>
+					</div>
+					<div
+						className="fixed inset-0 bg-black opacity-0"
+						onClick={() => setShowPopup(false)}
+					></div>
+				</div>
+			)}
 			<div className="flex flex-col items-center sm:w-[40rem] md:w-[60rem] lg:w-[70rem] xl:w-[80rem] 2xl:w-[80rem] 3xl:w-[100rem] h-auto sm:h-[20rem] md:h-[30rem] lg:h-[35rem] xl:h-[38rem] 2xl:h-[38rem] 3xl:h-[60rem] bg-white rounded-2xl">
 				<div className="text-black md:text-2xl text-base font-medium pt-8 md:pt-16">
 					สร้างแพลนใหม่
@@ -127,7 +150,7 @@ function CreatePage() {
 						{isSetting ? (
 							<div className="flex bg-[#4351cc] rounded-full justify-center items-center gap-2 px-4 py-0.5">
 								<img src="/public/imgs/Save.svg" alt="" />
-								<div className="text-center text-white text-xl font-medium font-['IBM Plex Sans Thai'] leading-relaxed">
+								<div className="text-center text-white text-xl font-medium">
 									บันทึก
 								</div>
 							</div>

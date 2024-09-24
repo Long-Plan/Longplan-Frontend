@@ -42,7 +42,7 @@
 		"react-tooltip": "^5.26.4",
 		"react-transition-group": "^4.4.5",
 		"reactflow": "^11.10.4",
-		"styled-components": "^6.1.8",
+		"styled-components": "^6.1.13",
 		"tsdef": "^0.0.14",
 		"zustand": "^4.5.0"
 	},

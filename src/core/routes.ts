@@ -6,8 +6,8 @@ import LoginPage from "modules/login/pages/LoginPage";
 import RootPage from "modules/root/pages/RootPage";
 import UserPage from "modules/user/pages/UserPage";
 // import DocPage from "modules/home/pages/DocPage";
-import CreatePage from "../modules/CreatePlan/pages/CreatePage.tsx";
-import SelectStudyProgram from "modules/CreatePlan/pages/SelectStudyProgram.tsx";
+import CreatePage from "../modules/Plan/pages/CreatePage.tsx";
+import SelectStudyProgram from "modules/Plan/pages/SelectStudyProgram.tsx";
 
 const routes = [
 	{
