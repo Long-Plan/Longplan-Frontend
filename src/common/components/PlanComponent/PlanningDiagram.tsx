@@ -7,10 +7,11 @@ export function PlanDiagram() {
   return (
     <div className="flex items-start space-x-4">
       <MainContainer>
-        <div className="p-4">
+        <div className="p-0">
           <h2 className="text-center p-4">เลือกวิชาที่ต้องการแสดงข้อมูล</h2>
-          {/* Main container for the course information */}
-          <div className="flex flex-col space-y-4 w-[512px] rounded-[20px] p-4 border border-blue-shadeb3">
+
+          {/* Main container for the course information with reduced width */}
+          <div className="flex flex-col space-y-4 w-[448px] rounded-[20px] p-4 border border-blue-shadeb3">
             <div className="flex items-center space-x-4 rounded-[12px] border border-blue-shadeb5 pr-4">
               {/* Left side - Course Number */}
               <div className="flex items-center gap-4 mr-8">
@@ -58,7 +59,9 @@ export function PlanDiagram() {
               <p className="px-4 text-white">Major</p>
             </div>
           </div>
-          <div className="w-[512px]">
+
+          {/* Major Requirements Section with reduced width */}
+          <div className="w-[448px]">
             <div className="flex flex-col space-y-2 rounded-[20px] border border-blue-shadeb3">
               <div className="flex flex-row w-full h-full bg-blue-shadeb05 rounded-t-[20px] pl-4 text-sm py-2 text-blue-shadeb5 gap-2">
                 <CheckBadgeIcon className="text-blue-shadeb5 w-8 h-8" />

@@ -72,12 +72,12 @@ export default function PlanName({ onSave }: PlanNameProps) {
             onBlur={() => setIsFocused(false)}
             className={`rounded-full w-[412px] h-[48px] p-3 outline-none transition-all duration-300 ${
               hasError ? "border-red-500" : "border-blue-shadeb5"
-            } ${isFocused ? "border-4" : "border-2"} ${
+            } ${isFocused ? "border-4 " : "border-2"} ${
               hasError || charLimitExceeded ? "text-red-500" : "text-gray-800"
             }`}
             style={{
               backgroundColor: "#FFFFFF",
-              transition: "border-color 0.3s ease",
+              transition: "border-blue-shadeb5 0.3s ease",
             }}
           />
           {hasError && (

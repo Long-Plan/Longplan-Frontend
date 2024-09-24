@@ -9,6 +9,7 @@ import ConfirmPopup from "common/components/Popup/ConfirmPopup";
 import { useNavigate } from "react-router-dom"; // For routing navigation
 import Navbar from "common/components/Navbar/Navbar";
 import PlanName from "common/components/PlanName/PlanName";
+import LPDiagram from "common/components/LPDiagram";
 
 function PlanPage() {
   const loadingContext = useLoadingContext();
@@ -53,27 +54,33 @@ function PlanPage() {
         overflowX: "hidden",
       }}
     >
-      <div className="w-full h-16 flex flex-row pl-24">
-        <Navbar showExitPopup={handleShowExitPopup} />
-        {/* Back Button */}
-        <div className="relative">
-          <button
-            className="w-20 h-8 bg-[#ecedf9] rounded-[20px] flex justify-left items-center"
-            onClick={handleBackClick}
-          >
-            <ChevronLeftIcon className="w-7 h-7 text-[#7b83eb] ml-0" />
-          </button>
-        </div>
+      <div className="w-full h-full ">
+        <div className="w-full h-16 flex flex-row pl-24 py-6 plan-select">
+          <Navbar showExitPopup={handleShowExitPopup} />
+          {/* Back Button */}
+          <div className="relative">
+            <button
+              className="w-20 h-8 bg-[#ecedf9] rounded-[20px] flex justify-left items-center"
+              onClick={handleBackClick}
+            >
+              <ChevronLeftIcon className="w-7 h-7 text-[#7b83eb] ml-0" />
+            </button>
+          </div>
 
-        {/* Render the ConfirmationPopup component */}
-        <ConfirmPopup
-          show={showPopup}
-          onCancel={handleCancelExit}
-          onConfirm={handleConfirmExit}
-        />
-        <PlanName />
+          {/* Render the ConfirmationPopup component */}
+          <ConfirmPopup
+            show={showPopup}
+            onCancel={handleCancelExit}
+            onConfirm={handleConfirmExit}
+          />
+
+          <PlanName />
+        </div>
+        <div className="bg-white flex mt-8 rounded-xl ml-24">
+          <PlanDiagram />
+          <LPDiagram />
+        </div>
       </div>
-      <PlanDiagram />
     </PageContainer>
   );
 }
